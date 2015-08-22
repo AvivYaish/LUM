@@ -37,6 +37,11 @@ function readMatrix() {
     return M;
 }
 
+/**
+ * Given a matrix M, generate table markup for it's data.
+ * @param M
+ * @return {string}
+ */
 function matrixMarkup(M) {
     var markup = "";
     for (var row = 0; row < M.length; row++) {

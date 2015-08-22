@@ -5,7 +5,11 @@ Checking the "PLU decomposition" option allows moving rows in M to ensure it has
 The P matrix is the row shift matrix, and the decomposition is such that PM=LU.
 
 Special thanks to:
+
 jQuery
+
 math.js - awesome library, very useful matrix functions
+
 TodoMVC - used some CSS
+
 João Sardinha - used some of his table CSS

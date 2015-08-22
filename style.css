@@ -1,0 +1,95 @@
+/**
+ * the other css of this project found in
+ * https://cdn.rawgit.com/tastejs/todomvc/gh-pages/examples/vanillajs/bower_components/todomvc-common/base.css
+ */
+
+h1 {
+    top: -120px;
+    width: 100%;
+    font-size: 70px;
+    font-weight: bold;
+    text-align: center;
+    color: #b3b3b3;
+    color: rgba(255, 255, 255, 0.3);
+    text-shadow: -1px -1px rgba(0, 0, 0, 0.2);
+}
+
+#user-connection {
+    text-align:center;
+    margin: auto 0;
+}
+
+#user-connection br {
+    content: "A" ;
+    display: block ;
+    margin-bottom: 1.0em;
+}
+
+#msg-to-user {
+   text-align: center;
+}
+
+#todo-list li textarea  {
+    white-space: pre;
+    padding: 15px 60px 15px 15px;
+    margin-left: 45px;
+    display: block;
+    line-height: 1.2;
+    width: 70%;
+    color: inherit;
+    font-size: 24px;
+    font-family: inherit;
+    max-width: 70%;
+    position: relative;
+    overflow:hidden;
+    border: none;
+    background-color:inherit;
+}
+
+form {
+    background: rgba(255, 255, 255, 0.9);
+    margin: 130px 0 40px 0;
+    border: 1px solid #ccc;
+    position: relative;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2),
+    0 25px 50px 0 rgba(0, 0, 0, 0.15);
+}
+
+form:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 15px;
+    z-index: 2;
+    border-bottom: 1px solid #6c615c;
+    background: #8d7d77;
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#9d8b83',
+        EndColorStr='#847670');
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+}
+
+#todo-list li.completed textarea {
+    color: #a9a9a9;
+    text-decoration: line-through;
+}
+
+#logout {
+    background: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.2);
+    position: relative;
+
+    line-height: 20px;
+    font-size: 11px;
+    padding: 0 10px;
+    border-radius: 3px;
+}
+
+#logout:hover{
+    background: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.3);
+}

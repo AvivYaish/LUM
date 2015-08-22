@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $("#choose-size").click(drawMatrixInput);
     $("#decompose").click(presentDecomposition);
-    $("#P-div").toggle();
+    $("#P-div").hide();
     $("#decomposition").hide();
 });
 
@@ -37,7 +37,7 @@ function presentDecomposition() {
     var markup = "";
 
     if (shouldLPU) {
-        $("#P-div").toggle();
+        $("#P-div").show();
         for (var row = 0; row < size; row++) {
             markup += "<tr>";
             for (var col = 0; col < size; col++) {

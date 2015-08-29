@@ -12,6 +12,7 @@ var DATA_START = 1;
 var DATA_TRAIL_LEN = 1;
 
 $(document).ready(function () {
+    // scrollView is a new function, if called by a $("#div-name").scrollView(), it scrolls to the div.
     $.fn.scrollView = function () {
         return this.each(function () {
             $('html, body').animate({
@@ -20,12 +21,12 @@ $(document).ready(function () {
         });
     };
 
-    $("#choose-size").click(function(event) {
-        drawMatrixInput();
-    });
+    $("#choose-size").click(drawMatrixInput);
     $("#decompose").click(presentDecomposition);
     $("#P-div").hide();
     $("#decomposition").hide();
+
+    // Show the load from file div only if possible
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
         $("#load-from-file-div").hide();
     } else {
@@ -49,7 +50,7 @@ function loadFile(event) {
         matrix[row] = matrix[row].split(COL_DELIM);
     }
 
-    drawMatrixInput(matrix)
+    drawMatrixInput(undefined, matrix)
 }
 
 /**
@@ -76,33 +77,26 @@ function handleFileSelect(event) {
 function handleDragOver(event) {
     event.stopPropagation();
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    event.dataTransfer.dropEffect = 'copy';
 }
 
 /**
  * Draws the input table for the input matrix.
+ * @param event Received if this is called by the event listener.
  * @param M A matrix with the default values to use for the input.
  */
-function drawMatrixInput(M) {
+function drawMatrixInput(event, M) {
     var size;
-    var tableMarkup = "";
-    if (typeof(M) === 'undefined') {
-        size = parseInt($("#matrix-size").val());
-        M = math.zeros(size, size);
-    } else {
+    // Determine if the function was called by an event listener or by loadFile
+    if (typeof(event) === 'undefined') {  // loadFile
         size = M.length;
         $("#matrix-size").val(size);
+    } else {  // event listener
+        size = parseInt($("#matrix-size").val());
+        M = math.zeros(size, size);
     }
 
-    for (var row = 0; row < size; row++) {
-        tableMarkup += "<tr>";
-        for (var col = 0; col < size; col++) {
-            tableMarkup += '<td> <input id="' + row + '-' + col + '" ' +
-                'type="text" value="' + M[row][col] + '"> </td>';
-        }
-        tableMarkup += "</tr>";
-    }
-    $("#matrix-data").html(tableMarkup);
+    $("#matrix-data").html(matrixMarkup(M, true));
     $("#list").html("Drop files here");
 }
 
@@ -131,19 +125,25 @@ function isInt(n) {
 
 /**
  * Given a matrix M, generate table markup for it's data.
- * @param M
+ * @param M The matrix.
+ * @param input true if should be a matrix with input, false if not.
  * @return {string}
  */
-function matrixMarkup(M) {
+function matrixMarkup(M, input) {
     var markup = "";
     for (var row = 0; row < M.length; row++) {
         markup += "<tr>";
         for (var col = 0; col < M.length; col++) {
-            if (isInt(M[row][col])) {
-                markup += '<td>' + M[row][col] + '</td>';
+            markup += '<td>';
+            if (input === true) {
+                markup += '<input id="' + row + '-' + col + '" ' +
+                    'type="text" value="' + M[row][col] + '">';
+            } else if (isInt(M[row][col])) {
+                markup +=  M[row][col];
             } else {
-                markup += '<td>' + parseFloat(M[row][col].toFixed(DIGITS_AFTER_DOT)) + '</td>';
+                markup += parseFloat(M[row][col].toFixed(DIGITS_AFTER_DOT));
             }
+            markup += '</td>';
         }
         markup += "</tr>";
     }
@@ -154,14 +154,14 @@ function matrixMarkup(M) {
  * Presents the decomposition.
  */
 function presentDecomposition() {
-    var shouldLPU = $("#lpu-decomp").prop("checked");
-    var result = decompose(readMatrix(), shouldLPU);
+    var shouldShowP = $("#p-decomp").prop("checked");
+    var result = decompose(readMatrix(), shouldShowP);
     var markup = "";
 
     // if the checkbox is checked, shows the P matrix.
-    if (shouldLPU) {
+    if (shouldShowP) {
         $("#P-div").show();
-        $("#P-matrix").html(matrixMarkup(result[P_CELL]));
+        $("#P-matrix").html(matrixMarkup(result[P_CELL]), false);
     }
     else {
         $("#P-div").hide();
@@ -171,14 +171,13 @@ function presentDecomposition() {
     for (var step = 1; step < result[LOG_L_CELL].length; step++) {
         markup += "<div><h3 class='clear'>Step " + step + "</h3>";
         markup += "<div class='left'><h4>L Matrix</h4><table>";
-        markup += matrixMarkup(result[LOG_L_CELL][step]);
+        markup += matrixMarkup(result[LOG_L_CELL][step], false);
         markup += "</table></div>";
         markup += "<div class='right'><h4>U Matrix</h4><table>";
-        markup += matrixMarkup(result[LOG_U_CELL][step]);
+        markup += matrixMarkup(result[LOG_U_CELL][step], false);
         markup += "</table></div></div><br>";
     }
 
     $("#step-by-step").html(markup);
-    $("#decomposition").show();
-    $("#decomposition").scrollView();
+    $("#decomposition").show().scrollView();
 }

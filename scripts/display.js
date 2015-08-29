@@ -12,6 +12,14 @@ var DATA_START = 1;
 var DATA_TRAIL_LEN = 1;
 
 $(document).ready(function () {
+    $.fn.scrollView = function () {
+        return this.each(function () {
+            $('html, body').animate({
+                scrollTop: $(this).offset().top
+            }, 1000);
+        });
+    };
+
     $("#choose-size").click(function(event) {
         drawMatrixInput();
     });
@@ -172,4 +180,5 @@ function presentDecomposition() {
 
     $("#step-by-step").html(markup);
     $("#decomposition").show();
+    $("#decomposition").scrollView();
 }

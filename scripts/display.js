@@ -135,7 +135,7 @@ function matrixMarkup(M, input) {
         markup += "<tr>";
         for (var col = 0; col < M.length; col++) {
             markup += '<td>';
-            if (input === true) {
+            if (input) {
                 markup += '<input id="' + row + '-' + col + '" ' +
                     'type="text" value="' + M[row][col] + '">';
             } else if (isInt(M[row][col])) {

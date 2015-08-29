@@ -8,6 +8,9 @@ $(document).ready(function () {
     $("#decomposition").hide();
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
         $("#load-from-file-div").hide();
+    } else {
+        $("#drop-zone").addEventListener('dragover', handleDragOver, false);
+        $("#drop-zone").addEventListener('drop', handleFileSelect, false);
     }
 });
 

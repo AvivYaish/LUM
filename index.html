@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Matrix decomposition</title>
-    <link rel="stylesheet" type="text/css" href="table.css">
-    <link rel="stylesheet" type="text/css" href="base.css">
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <script type="text/javascript"
-            src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjs/2.1.1/math.min.js"></script>
-    <script type="text/javascript" src="./decompose.js"></script>
-    <script type="text/javascript" src="./display.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/math.min.js"></script>
+    <script type="text/javascript" src="scripts/decompose.js"></script>
+    <script type="text/javascript" src="scripts/display.js"></script>
 </head>
 <body>
 <div id="matrix-config" align="center" style="display: block;">
     <form id="input-form" style="display: block;">
         <h1>M=LU</h1>
-        Matrix size: <input id="matrix-size" type="text" value="0">
-        <input id="choose-size" type="button" value="Choose size"><br>
-        <input type="checkbox" id="lpu-decomp">PLU decomposition<br>
-        <input id="decompose" type="button" value="Decompose"><br>
+        <label for="matrix-size">Matrix size:</label> <input id="matrix-size" type="text" value="0">
+        <input id="choose-size" type="button" value="Choose size"><br><br>
+        or <br>
         <div id="load-from-file-div">
             <br>
             <div id="drop-zone">Drop files here</div>
             <output id="list"></output>
         </div>
         <br>
+        <label for="lpu-decomp">PLU decomposition</label> <input type="checkbox" id="lpu-decomp"><br><br>
+        <input id="decompose" type="button" value="Decompose"><br><br>
     </form>
 
     <div align="center" style="display: block;">

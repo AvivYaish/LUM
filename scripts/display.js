@@ -9,10 +9,35 @@ $(document).ready(function () {
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
         $("#load-from-file-div").hide();
     } else {
-        $("#drop-zone").addEventListener('dragover', handleDragOver, false);
-        $("#drop-zone").addEventListener('drop', handleFileSelect, false);
+        var dropZone = document.getElementById('drop-zone');
+        dropZone.addEventListener('dragover', handleDragOver, false);
+        dropZone.addEventListener('drop', handleFileSelect, false);
     }
 });
+
+function handleFileSelect(event) {
+    $("#matrix-data").html('');
+    event.stopPropagation();
+    event.preventDefault();
+
+    var files = event.dataTransfer.files; // FileList object.
+
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+    for (var i = 0, f; f = files[i]; i++) {
+        output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+            f.size, ' bytes, last modified: ',
+            f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+            '</li>');
+    }
+    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+}
+
+function handleDragOver(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+}
 
 /**
  * Draws the input table for the input matrix.
@@ -67,7 +92,7 @@ function matrixMarkup(M) {
             if (isInt(M[row][col])) {
                 markup += '<td>' + M[row][col] + '</td>';
             } else {
-                markup += '<td>' + M[row][col].toFixed(DIGITS_AFTER_DOT) + '</td>';
+                markup += '<td>' + parseFloat(M[row][col].toFixed(DIGITS_AFTER_DOT)) + '</td>';
             }
         }
         markup += "</tr>";

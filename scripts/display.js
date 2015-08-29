@@ -23,11 +23,7 @@ function handleFileSelect(event) {
     var file = event.dataTransfer.files[0]; // FileList object.
     var reader = new FileReader();
 
-
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    output.push('File selected: <br><li><strong>', escape(file.name), '</li>');
-    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+    $("#list").html('<ul>File selected: <br><li><strong>' + escape(file.name) + '</li></ul>');
 }
 
 function handleDragOver(event) {
@@ -51,6 +47,7 @@ function drawMatrixInput() {
         tableMarkup += "</tr>";
     }
     $("#matrix-data").html(tableMarkup);
+    $("#list").html("Drop files here");
 }
 
 /**

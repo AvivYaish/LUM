@@ -73,22 +73,24 @@ function handleDragOver(event) {
 
 /**
  * Draws the input table for the input matrix.
+ * @param M A matrix with the default values to use for the input.
  */
-function drawMatrixInput(matrix) {
+function drawMatrixInput(M) {
     var size;
-    if (typeof(matrix) === 'undefined') {
+    var tableMarkup = "";
+    if (typeof(M) === 'undefined') {
         size = parseInt($("#matrix-size").val());
-        matrix = math.zeros(size, size);
+        M = math.zeros(size, size);
     } else {
-        size = matrix.length;
+        size = M.length;
         $("#matrix-size").val(size);
     }
-    var tableMarkup = "";
+
     for (var row = 0; row < size; row++) {
         tableMarkup += "<tr>";
         for (var col = 0; col < size; col++) {
             tableMarkup += '<td> <input id="' + row + '-' + col + '" ' +
-                'type="text" value="' + matrix[row][col] + '"> </td>';
+                'type="text" value="' + M[row][col] + '"> </td>';
         }
         tableMarkup += "</tr>";
     }

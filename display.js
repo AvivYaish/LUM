@@ -6,6 +6,9 @@ $(document).ready(function () {
     $("#decompose").click(presentDecomposition);
     $("#P-div").hide();
     $("#decomposition").hide();
+    if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+        $("#load-from-file-div").hide();
+    }
 });
 
 /**

@@ -1,3 +1,6 @@
+/** Specifies the number of digits to show after the dot. Does not affect computation precision. */
+var DIGITS_AFTER_DOT = 3;
+
 $(document).ready(function () {
     $("#choose-size").click(drawMatrixInput);
     $("#decompose").click(presentDecomposition);
@@ -38,6 +41,14 @@ function readMatrix() {
 }
 
 /**
+ * @param n A number.
+ * @return {boolean} true if n is an int, false otherwise.
+ */
+function isInt(n) {
+    return n % 1 === 0;
+}
+
+/**
  * Given a matrix M, generate table markup for it's data.
  * @param M
  * @return {string}
@@ -47,7 +58,11 @@ function matrixMarkup(M) {
     for (var row = 0; row < M.length; row++) {
         markup += "<tr>";
         for (var col = 0; col < M.length; col++) {
-            markup += '<td>' + M[row][col] + '</td>';
+            if (isInt(M[row][col])) {
+                markup += '<td>' + M[row][col] + '</td>';
+            } else {
+                markup += '<td>' + M[row][col].toFixed(DIGITS_AFTER_DOT) + '</td>';
+            }
         }
         markup += "</tr>";
     }

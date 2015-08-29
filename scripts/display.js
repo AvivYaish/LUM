@@ -12,7 +12,9 @@ var DATA_START = 1;
 var DATA_TRAIL_LEN = 1;
 
 $(document).ready(function () {
-    $("#choose-size").click(drawMatrixInput);
+    $("#choose-size").click(function(event) {
+        drawMatrixInput();
+    });
     $("#decompose").click(presentDecomposition);
     $("#P-div").hide();
     $("#decomposition").hide();
@@ -75,10 +77,11 @@ function handleDragOver(event) {
 function drawMatrixInput(matrix) {
     var size;
     if (typeof(matrix) === 'undefined') {
-        size = $("#matrix-size").val();
+        size = parseInt($("#matrix-size").val());
         matrix = math.zeros(size, size);
     } else {
         size = matrix.length;
+        $("#matrix-size").val(size);
     }
     var tableMarkup = "";
     for (var row = 0; row < size; row++) {

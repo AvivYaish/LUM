@@ -1,6 +1,16 @@
 /** Specifies the number of digits to show after the dot. Does not affect computation precision. */
 var DIGITS_AFTER_DOT = 3;
 
+/** Delimiters for the GNU Octave matrix format. */
+var ROW_DELIM = ';';
+var COL_DELIM = ',';
+
+/** The cell of the start of the data in the GNU Octave matrix format. */
+var DATA_START = 1;
+
+/** The length of trailing unnecessary data cells in the GNU Octave matrix format. */
+var DATA_TRAIL_LEN = 1;
+
 $(document).ready(function () {
     $("#choose-size").click(drawMatrixInput);
     $("#decompose").click(presentDecomposition);
@@ -15,17 +25,44 @@ $(document).ready(function () {
     }
 });
 
+/**
+ * Given the load event, format the file into a matrix based on the GNU Octave specification:
+ * [col0, col1, ...; col0, col1, ...; ....]
+ * Where ; is the row delimiter, and , is the column delimiter.
+ * @param event Load event.
+ */
+function loadFile(event) {
+    var matrix = event.target.result.substring(DATA_START, event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
+
+    // split each row into the proper columns
+    for (var row = 0; row < matrix.length; row++) {
+        matrix[row] = matrix[row].split(COL_DELIM);
+    }
+
+    drawMatrixInput(matrix)
+}
+
+/**
+ * Handles dropping a file into the drop-zone.
+ * @param event File dropping event.
+ */
 function handleFileSelect(event) {
-    $("#matrix-data").html('');
     event.stopPropagation();
     event.preventDefault();
+    $("#matrix-data").html('');
 
     var file = event.dataTransfer.files[0]; // FileList object.
     var reader = new FileReader();
 
     $("#list").html('<ul>File selected: <br><li><strong>' + escape(file.name) + '</li></ul>');
+    reader.onload = loadFile;
+    reader.readAsText(file);
 }
 
+/**
+ * Handles dragging files over the drop-zone.
+ * @param event Dragging event.
+ */
 function handleDragOver(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -35,14 +72,20 @@ function handleDragOver(event) {
 /**
  * Draws the input table for the input matrix.
  */
-function drawMatrixInput() {
-    var size = $("#matrix-size").val();
+function drawMatrixInput(matrix) {
+    var size;
+    if (typeof(matrix) === 'undefined') {
+        size = $("#matrix-size").val();
+        matrix = math.zeros(size, size);
+    } else {
+        size = matrix.length;
+    }
     var tableMarkup = "";
     for (var row = 0; row < size; row++) {
         tableMarkup += "<tr>";
         for (var col = 0; col < size; col++) {
             tableMarkup += '<td> <input id="' + row + '-' + col + '" ' +
-                'type="text" value="0"> </td>';
+                'type="text" value="' + matrix[row][col] + '"> </td>';
         }
         tableMarkup += "</tr>";
     }

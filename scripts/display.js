@@ -44,7 +44,7 @@ $(document).ready(function () {
  */
 function loadFile(event) {
     var matrix = event.target.result.substring(DATA_START, event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
-
+    
     // split each row into the proper columns
     for (var row = 0; row < matrix.length; row++) {
         matrix[row] = matrix[row].split(COL_DELIM);
@@ -86,13 +86,11 @@ function handleDragOver(event) {
  * @param M A matrix with the default values to use for the input.
  */
 function drawMatrixInput(event, M) {
-    var size;
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile
-        size = M.length;
-        $("#matrix-size").val(size);
+        $("#matrix-size").val(M.length);
     } else {  // event listener
-        size = parseInt($("#matrix-size").val());
+        var size = parseInt($("#matrix-size").val());
         M = math.zeros(size, size);
     }
 
@@ -136,8 +134,7 @@ function matrixMarkup(M, input) {
         for (var col = 0; col < M.length; col++) {
             markup += '<td>';
             if (input) {
-                markup += '<input id="' + row + '-' + col + '" ' +
-                    'type="text" value="' + M[row][col] + '">';
+                markup += '<input id="' + row + '-' + col + '" ' + 'type="text" value="' + M[row][col] + '">';
             } else if (isInt(M[row][col])) {
                 markup +=  M[row][col];
             } else {

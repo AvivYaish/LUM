@@ -24,6 +24,12 @@
         </div>
         <br>
         <label for="p-decomp">PLU decomposition</label> <input type="checkbox" id="p-decomp"><br><br>
+        <label for="decomposition-type">Decompose to:</label>
+        <select id="decomposition-type">
+            <option value="LU">LU</option>
+            <option value="PLU">PLU</option>
+            <option value="LDLt">LDLt</option>
+        </select>
         <input id="decompose" type="button" value="Decompose"><br><br>
     </form>
 

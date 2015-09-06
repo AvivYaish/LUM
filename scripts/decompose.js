@@ -66,6 +66,8 @@ function decompose(M, swapRows) {
         logL.push(math.multiply(logL[col], curL));
         logU.push(math.clone(M));
     }
+    logL.shift();
+    logU.shift();
     return [logL, logU, P];
 }
 
@@ -100,7 +102,7 @@ function decomposeLDL(M) {
         if (v[row] === 0) {
             return [];  // No LU factorization, can't continue!
         }
-        logV.push(v);
+        logV.push([math.clone(v)]);  // need to insert into array so the printing will work alright
 
         M[row][row] = v[row];  // store the current diagonal value for M
 
@@ -114,21 +116,19 @@ function decomposeLDL(M) {
         // if this is the first row, no need to preform the subtraction in the algorithm
         if (row === 0) {
             M = math.subset(M, matrixIndex, math.divide(math.subset(M, matrixIndex), v[row]));
-            continue;
+        } else {
+            secRange = math.range(0, row);  // (1:j-1)
+            M = math.subset(M, matrixIndex,
+                math.divide(
+                    math.subtract(
+                        math.subset(M, matrixIndex),
+                        math.multiply(
+                            math.subset(M, math.index(firstRange, secRange)),
+                            math.subset(v, math.index(secRange)))),
+                    v[row])
+            );
         }
-
-        secRange = math.range(0, row);  // (1:j-1)
-        M = math.subset(M, matrixIndex,
-            math.divide(
-                math.subtract(
-                    math.subset(M, matrixIndex),
-                    math.multiply(
-                        math.subset(M, math.index(firstRange, secRange)),
-                        math.subset(v, math.index(secRange)))),
-                v[row])
-        );
-        logA.push(M);
+        logA.push(math.clone(M));
     }
-
     return [logA, logV];
 }

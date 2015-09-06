@@ -34,11 +34,11 @@ function getRowSwapMatrix(M) {
 }
 
 /**
- * @param M matrix to decompose.
+ * @param M matrix to decomposePLU.
  * @param swapRows if false, decomposes M to LU matrices. Otherwise, to LPU matrices.
- * @return Array [[L0, L1, L2, ...], [U0, U1, U2, ...], P]
+ * @return Object [[L0, L1, L2, ...], [U0, U1, U2, ...]] that also has a P attribute
  */
-function decompose(M, swapRows) {
+function decomposePLU(M, swapRows) {
     var logL = [],  // keeps a log of the L matrices
         logU = [],  // log of U matrices
         curL,       // the current L matrix
@@ -68,7 +68,9 @@ function decompose(M, swapRows) {
     }
     logL.shift();
     logU.shift();
-    return [logL, logU, P];
+    var toReturn = [logL, logU];
+    toReturn.P = P;
+    return toReturn;
 }
 
 /**

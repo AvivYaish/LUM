@@ -11,6 +11,12 @@ var DATA_START = 1;
 /** The length of trailing unnecessary data cells in the GNU Octave matrix format. */
 var DATA_TRAIL_LEN = 1;
 
+/** Alignments of matrices on the screen */
+var MATRIX_ALIGN = ['left', 'right'];
+
+/** Max number of matrices in the same row */
+var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
+
 $(document).ready(function () {
     // scrollView is a new function, if called by a $("#div-name").scrollView(), it scrolls to the div.
     $.fn.scrollView = function () {
@@ -158,10 +164,10 @@ function presentDecomposition() {
     switch ($("#decomposition-type").val()) {
         case "PLU":
             shouldShowP = true;
-            result = decompose(readMatrix(), shouldShowP);
+            result = decomposePLU(readMatrix(), shouldShowP);
             break;
         case "LU":
-            result = decompose(readMatrix(), shouldShowP);
+            result = decomposePLU(readMatrix(), shouldShowP);
             break;
         case "LDLt":
             result = decomposeLDL(readMatrix());
@@ -173,10 +179,10 @@ function presentDecomposition() {
         return;
     }
 
-    // if the checkbox is checked, shows the P matrix.
+    // if needed, show the P matrix.
     if (shouldShowP) {
         $("#P-div").show();
-        $("#P-matrix").html(matrixMarkup(result[P_CELL]), false);
+        $("#P-matrix").html(matrixMarkup(result.P, false));
     }
     else {
         $("#P-div").hide();
@@ -185,12 +191,13 @@ function presentDecomposition() {
     // shows each step of the decomposition process
     for (var step = 0; step < result[LOG_L_CELL].length; step++) {
         markup += "<div><h3 class='clear'>Step " + step + "</h3>";
-        markup += "<div class='left'><h4>Left Matrix</h4><table>";
-        markup += matrixMarkup(result[LOG_L_CELL][step], false);
-        markup += "</table></div>";
-        markup += "<div class='right'><h4>Right Matrix</h4><table>";
-        markup += matrixMarkup(result[LOG_U_CELL][step], false);
-        markup += "</table></div></div><br>";
+        for (var matrixNum = 0; matrixNum < result.length; matrixNum++) {
+            markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">";
+            markup += "<h4>Matrix #" + matrixNum + "</h4><table>";
+            markup += matrixMarkup(result[matrixNum][step], false);
+            markup += "</table></div>";
+        }
+        markup += "</div><br>";
     }
 
     $("#step-by-step").html(markup);

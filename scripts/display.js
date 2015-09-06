@@ -131,7 +131,7 @@ function matrixMarkup(M, input) {
     var markup = "";
     for (var row = 0; row < M.length; row++) {
         markup += "<tr>";
-        for (var col = 0; col < M.length; col++) {
+        for (var col = 0; col < M[row].length; col++) {
             markup += '<td>';
             if (input) {
                 markup += '<input id="' + row + '-' + col + '" ' + 'type="text" value="' + M[row][col] + '">';
@@ -151,9 +151,27 @@ function matrixMarkup(M, input) {
  * Presents the decomposition.
  */
 function presentDecomposition() {
-    var shouldShowP = $("#p-decomp").prop("checked");
-    var result = decompose(readMatrix(), shouldShowP);
-    var markup = "";
+    var shouldShowP = false,  // true if the P matrix should be shown
+        result,       // will hold the result
+        markup = "";  // markup of the matrices to write
+
+    switch ($("#decomposition-type").val()) {
+        case "PLU":
+            shouldShowP = true;
+            result = decompose(readMatrix(), shouldShowP);
+            break;
+        case "LU":
+            result = decompose(readMatrix(), shouldShowP);
+            break;
+        case "LDLt":
+            result = decomposeLDL(readMatrix());
+            break;
+    }
+
+    if (result === []) {
+        // show error
+        return;
+    }
 
     // if the checkbox is checked, shows the P matrix.
     if (shouldShowP) {
@@ -165,12 +183,12 @@ function presentDecomposition() {
     }
 
     // shows each step of the decomposition process
-    for (var step = 1; step < result[LOG_L_CELL].length; step++) {
+    for (var step = 0; step < result[LOG_L_CELL].length; step++) {
         markup += "<div><h3 class='clear'>Step " + step + "</h3>";
-        markup += "<div class='left'><h4>L Matrix</h4><table>";
+        markup += "<div class='left'><h4>Left Matrix</h4><table>";
         markup += matrixMarkup(result[LOG_L_CELL][step], false);
         markup += "</table></div>";
-        markup += "<div class='right'><h4>U Matrix</h4><table>";
+        markup += "<div class='right'><h4>Right Matrix</h4><table>";
         markup += matrixMarkup(result[LOG_U_CELL][step], false);
         markup += "</table></div></div><br>";
     }

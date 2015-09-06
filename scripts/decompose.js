@@ -1,5 +1,5 @@
 math.config({matrix: 'array'});
-var LOG_L_CELL = 0;
+var FIRST_RESULT_MATRIX = 0;
 
 /**
  * @param M input matrix.

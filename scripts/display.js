@@ -17,6 +17,7 @@ var MATRIX_ALIGN = ['left', 'right'];
 /** Max number of matrices in the same row */
 var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
 
+
 $(document).ready(function () {
     // scrollView is a new function, if called by a $("#div-name").scrollView(), it scrolls to the div.
     $.fn.scrollView = function () {
@@ -162,25 +163,25 @@ function matrixMarkup(M, input) {
  * Presents the decomposition.
  */
 function presentDecomposition() {
-    var shouldShowP = false,  // true if the P matrix should be shown
-        result,       // will hold the result
-        markup = "";  // markup of the matrices to write
+    var P,                  // the P matrix, if it's needed
+        M = readMatrix(),   // the input matrix
+        result,             // will hold the result
+        markup;             // markup of the matrices to write
 
     $("#P-div").hide();
 
     switch ($("#decomposition-type").val()) {
         case "PLU":
-            var M = readMatrix(),
-                P = getRowSwapMatrix(M);
+            P = getRowSwapMatrix(M);
             $("#P-matrix").html(matrixMarkup(P, false));
-            result = decomposeLU(math.multiply(P, M));
             $("#P-div").show();
+            result = decomposeLU(math.multiply(P, M));
             break;
         case "LU":
-            result = decomposeLU(readMatrix());
+            result = decomposeLU(M);
             break;
         case "LDLt":
-            result = decomposeLDL(readMatrix());
+            result = decomposeLDL(M);
             break;
     }
 
@@ -189,16 +190,9 @@ function presentDecomposition() {
         return;
     }
 
-    // if needed, show the P matrix.
-    if (shouldShowP) {
-
-    }
-    else {
-
-    }
-
+    markup = "";
     // shows each step of the decomposition process
-    for (var step = 0; step < result[LOG_L_CELL].length; step++) {
+    for (var step = 0; step < result[FIRST_RESULT_MATRIX].length; step++) {
         markup += "<div><h3 class='clear'>Step " + step + "</h3>";
         for (var matrixNum = 0; matrixNum < result.length; matrixNum++) {
             markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +

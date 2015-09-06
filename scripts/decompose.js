@@ -102,32 +102,32 @@ function decomposeLDL(M) {
         M[row][row] = v[row];  // store the current diagonal value for M
 
         // compute L(row+1:n, row). if row == n-1, nothing more to compute
-        if (row === n - 1) {
-            continue;
-        }
-        firstRange = math.range(row + 1, n);        // j + 1:n
-        matrixIndex = math.index(firstRange, row);  // (j+1:n, j)
+        if (row !== n - 1) {
+            firstRange = math.range(row + 1, n);        // j + 1:n
+            matrixIndex = math.index(firstRange, row);  // (j+1:n, j)
 
-        // if this is the first row, no need to preform the subtraction in the algorithm
-        if (row === 0) {
-            M = math.subset(M, matrixIndex, math.divide(math.subset(M, matrixIndex), v[row]));
-        } else {
-            secRange = math.range(0, row);  // (1:j-1)
+            // if this is the first row, no need to preform the subtraction in the algorithm
+            if (row === 0) {
+                M = math.subset(M, matrixIndex, math.divide(math.subset(M, matrixIndex), v[row]));
+            } else {
+                secRange = math.range(0, row);  // (1:j-1)
 
-            M = math.subset(M, matrixIndex,
-                math.divide(
-                    math.subtract(
-                        math.subset(M, matrixIndex),
-                        math.multiply(
-                            math.subset(M, math.index(firstRange, secRange)),
-                            math.subset(v, math.index(secRange)))),
-                    v[row])
-            );
+                M = math.subset(M, matrixIndex,
+                    math.divide(
+                        math.subtract(
+                            math.subset(M, matrixIndex),
+                            math.multiply(
+                                math.subset(M, math.index(firstRange, secRange)),
+                                math.subset(v, math.index(secRange)))),
+                        v[row])
+                );
+            }
         }
 
         // log the matrices
         logV.push([math.clone(v)]);  // need to insert into array so the printing will work alright
         logA.push(math.clone(M));
     }
+
     return [logA, logV];
 }

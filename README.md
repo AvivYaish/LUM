@@ -1,8 +1,12 @@
 # LUM
-Choose a matrix size, then input it's data. Press "Decompose" to decompose the given matrix M
-into a pair L,U such that M = LU, when L is lower triangular and U is upper triangular.
-Checking the "PLU decomposition" option allows moving rows in M to ensure it has such a decomposition.
-The P matrix is the row shift matrix, and the decomposition is such that PM=LU.
+Choose a matrix size, then input it's data. Choose a decomposition type and press "Decompose" to
+perform it.
+LU decomposes the given matrix M into a pair L,U such that M = LU, when L is lower triangular and U
+is upper triangular.
+PLU allows using a P row pivot matrix to move rows in M to ensure it has an LU decomposition.
+LDLt decomposes the given matrix based on the algorithm in p. 139 of Matrix Computations by
+Golub-Van Loan such that the result contains the L matrix below the diagonal, and the D matrix
+on the diagonal itself.
 
 Special thanks to:
 

@@ -1,5 +1,10 @@
 math.config({matrix: 'array'});
+
+/** */
 var FIRST_RESULT_MATRIX = 0;
+
+/** The result to return if there is no decomposition */
+var NO_DECOMP_RESULT = [];
 
 /**
  * @param M input matrix.
@@ -48,6 +53,10 @@ function decomposeLU(M) {
 
         // generate the curL matrix, and use it to zero out the current column in U
         for (var row = col + 1; row < M.length; row++) {
+            // need to divide by M[col][col], so if it's 0 decomposition is impossible!
+            if (M[col][col] === 0) {
+                return NO_DECOMP_RESULT;
+            }
             if (M[row][col] !== 0) {
                 curL[row][col] = M[row][col] / M[col][col];
                 M[row] = math.add(M[row], math.multiply(-curL[row][col], M[col]));
@@ -141,7 +150,7 @@ function decomposeLDL(M) {
     for (var row = 0; row < n; row++) {
         v = computeV(M, row);
         if (v[row] === 0) {
-            return [];  // No LU factorization, can't continue!
+            return NO_DECOMP_RESULT;  // No LU factorization, can't continue!
         }
         M[row][row] = v[row];
 

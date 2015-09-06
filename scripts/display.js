@@ -164,13 +164,33 @@ function matrixMarkup(M, input) {
 }
 
 /**
+ * Prints the result matrices.
+ * @param result Array containing the result matrices to print.
+ */
+function printResultMatrices(result) {
+    var markup = "";
+    // shows each step of the decomposition process
+    for (var step = 0; step < result[FIRST_RESULT_MATRIX].length; step++) {
+        markup += "<div><h3 class='clear'>Step " + step + "</h3>";
+        for (var matrixNum = 0; matrixNum < result.length; matrixNum++) {
+            markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
+                "<h4>Matrix #" + matrixNum + "</h4><table>" +
+                matrixMarkup(result[matrixNum][step], false) +
+                "</table></div>";
+        }
+        markup += "</div><br>";
+    }
+
+    $("#step-by-step").html(markup);
+}
+
+/**
  * Presents the decomposition.
  */
 function presentDecomposition() {
     var P,                  // the P matrix, if it's needed
         M = readMatrix(),   // the input matrix
-        result,             // will hold the result
-        markup;             // markup of the matrices to write
+        result;             // will hold the result
 
     $("#P-div").hide();
 
@@ -189,24 +209,11 @@ function presentDecomposition() {
             break;
     }
 
-    if (result === []) {
-        // show error
-        return;
+    if (result === NO_DECOMP_RESULT) {
+        $("#step-by-step").html("Can't decompose!");
+    } else {
+        printResultMatrices(result);
     }
 
-    markup = "";
-    // shows each step of the decomposition process
-    for (var step = 0; step < result[FIRST_RESULT_MATRIX].length; step++) {
-        markup += "<div><h3 class='clear'>Step " + step + "</h3>";
-        for (var matrixNum = 0; matrixNum < result.length; matrixNum++) {
-            markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
-                "<h4>Matrix #" + matrixNum + "</h4><table>" +
-                matrixMarkup(result[matrixNum][step], false) +
-                "</table></div>";
-        }
-        markup += "</div><br>";
-    }
-
-    $("#step-by-step").html(markup);
     $("#decomposition").show().scrollView();
 }

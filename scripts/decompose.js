@@ -1,7 +1,5 @@
 math.config({matrix: 'array'});
 var LOG_L_CELL = 0;
-var LOG_U_CELL = 1;
-var P_CELL = 2;
 
 /**
  * @param M input matrix.

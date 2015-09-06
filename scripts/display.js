@@ -71,7 +71,7 @@ function handleFileSelect(event) {
     var file = event.dataTransfer.files[0]; // FileList object.
     var reader = new FileReader();
 
-    $("#list").html('<ul>File selected: <br><li><strong>' + escape(file.name) + '</li></ul>');
+    $("#list").html('<ul>File selected: <br><li><strong>' + encodeURI(file.name) + '</li></ul>');
     reader.onload = loadFile;
     reader.readAsText(file);
 }

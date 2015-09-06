@@ -30,6 +30,7 @@ $(document).ready(function () {
     $("#choose-size").click(drawMatrixInput);
     $("#decompose").click(presentDecomposition);
     $("#P-div").hide();
+    $("#matrix-data-div").hide();
     $("#decomposition").hide();
 
     // Show the load from file div only if possible
@@ -98,10 +99,11 @@ function drawMatrixInput(event, M) {
     } else {  // event listener
         var size = parseInt($("#matrix-size").val());
         M = math.zeros(size, size);
+        $("#list").html("Drop files here");
     }
 
     $("#matrix-data").html(matrixMarkup(M, true));
-    $("#list").html("Drop files here");
+    $("#matrix-data-div").show();
 }
 
 /**

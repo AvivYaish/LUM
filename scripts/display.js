@@ -93,7 +93,7 @@ function handleDragOver(event) {
  */
 function drawMatrixInput(event, M) {
     // Determine if the function was called by an event listener or by loadFile
-    if (typeof(event) === 'undefined') {  // loadFile
+    if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
         $("#matrix-size").val(M.length);
     } else {  // event listener
         var size = parseInt($("#matrix-size").val());
@@ -139,6 +139,8 @@ function matrixMarkup(M, input) {
         markup += "<tr>";
         for (var col = 0; col < M[row].length; col++) {
             markup += '<td>';
+
+            // format the matrix cell according to it's data and if it is the input matrix
             if (input) {
                 markup += '<input id="' + row + '-' + col + '" ' + 'type="text" value="' + M[row][col] + '">';
             } else if (isInt(M[row][col])) {
@@ -146,6 +148,7 @@ function matrixMarkup(M, input) {
             } else {
                 markup += parseFloat(M[row][col].toFixed(DIGITS_AFTER_DOT));
             }
+
             markup += '</td>';
         }
         markup += "</tr>";
@@ -192,10 +195,10 @@ function presentDecomposition() {
     for (var step = 0; step < result[LOG_L_CELL].length; step++) {
         markup += "<div><h3 class='clear'>Step " + step + "</h3>";
         for (var matrixNum = 0; matrixNum < result.length; matrixNum++) {
-            markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">";
-            markup += "<h4>Matrix #" + matrixNum + "</h4><table>";
-            markup += matrixMarkup(result[matrixNum][step], false);
-            markup += "</table></div>";
+            markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
+                "<h4>Matrix #" + matrixNum + "</h4><table>" +
+                matrixMarkup(result[matrixNum][step], false) +
+                "</table></div>";
         }
         markup += "</div><br>";
     }

@@ -39,7 +39,10 @@ function getRowSwapMatrix(M) {
  * @return Array [[L0, L1, L2, ...], [U0, U1, U2, ...], P]
  */
 function decompose(M, swapRows) {
-    var logL = [], logU = [], curL, P;
+    var logL = [],  // keeps a log of the L matrices
+        logU = [],  // log of U matrices
+        curL,       // the current L matrix
+        P;          // the P matrix
 
     if (swapRows) {
         P = getRowSwapMatrix(M);
@@ -64,4 +67,68 @@ function decompose(M, swapRows) {
         logU.push(math.clone(M));
     }
     return [logL, logU, P];
+}
+
+/**
+ * Based on the algorithm in p. 139 of Matrix Computations by Golub-Van Loan
+ * @param M The input matrix.
+ * @return Array [[A0, A1, A2, ...], [V0, V1, V2, ...]]
+ */
+function decomposeLDL(M) {
+    var n = M.length,
+        matrixIndex,// an index used for matrix operations
+        firstRange, // a temp range used for matrix operations
+        secRange,   // another one
+        v,          // temporary matrix used for computation
+        logA = [],       // a log of the A matrices
+        logV = [];       // a log of the V matrices
+
+    for (var row = 0; row < n; row++) {
+        // compute v
+        v = math.zeros(row + 1);
+        for (var col = 0; col < row; col++) {
+            v[col] = M[row][col] * M[col][col];
+        }
+        v[row] = M[row][row];
+        if (row > 0) {
+            firstRange = math.range(0, row);
+            v[row] -= math.multiply(
+                        math.subset(M, math.index(row, firstRange)),
+                        math.subset(v, math.index(firstRange))
+                      );
+        }
+        if (v[row] === 0) {
+            return [];  // No LU factorization, can't continue!
+        }
+        logV.push(v);
+
+        M[row][row] = v[row];  // store the current diagonal value for M
+
+        // compute L(row+1:n, row). if row == n-1, nothing more to compute
+        if (row === n - 1) {
+            continue;
+        }
+        firstRange = math.range(row + 1, n);  // j + 1:n
+        matrixIndex = math.index(firstRange, row); // (j+1:n, j)
+
+        // if this is the first row, no need to preform the subtraction in the algorithm
+        if (row === 0) {
+            M = math.subset(M, matrixIndex, math.divide(math.subset(M, matrixIndex), v[row]));
+            continue;
+        }
+
+        secRange = math.range(0, row);  // (1:j-1)
+        M = math.subset(M, matrixIndex,
+            math.divide(
+                math.subtract(
+                    math.subset(M, matrixIndex),
+                    math.multiply(
+                        math.subset(M, math.index(firstRange, secRange)),
+                        math.subset(v, math.index(secRange)))),
+                v[row])
+        );
+        logA.push(M);
+    }
+
+    return [logA, logV];
 }

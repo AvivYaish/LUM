@@ -129,14 +129,6 @@ function readMatrix() {
 }
 
 /**
- * @param n A number.
- * @return {boolean} true if n is an int, false otherwise.
- */
-function isInt(n) {
-    return n % 1 === 0;
-}
-
-/**
  * Given a matrix M, generate table markup for it's data.
  * @param M The matrix.
  * @param input true if should be a matrix with input, false if not.
@@ -153,7 +145,7 @@ function matrixMarkup(M, input) {
             if (input) {
                 markup += '<input id="' + row + '-' + col + '" ' +
                     'type="text" value="' + M[row][col] + '">';
-            } else if (isInt(M[row][col])) {
+            } else if (Number.isInteger(M[row][col])) {
                 markup +=  M[row][col];
             } else {
                 markup += parseFloat(M[row][col].toFixed(DIGITS_AFTER_DOT));

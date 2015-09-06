@@ -35,7 +35,7 @@ function getRowSwapMatrix(M) {
 
 /**
  * @param M matrix to decomposePLU.
- * @param swapRows if false, decomposes M to LU matrices. Otherwise, to LPU matrices.
+ * @param swapRows if false, decomposes M to LU matrices. Otherwise, to PLU matrices.
  * @return Object [[L0, L1, L2, ...], [U0, U1, U2, ...]] that also has a P attribute
  */
 function decomposePLU(M, swapRows) {
@@ -66,8 +66,12 @@ function decomposePLU(M, swapRows) {
         logL.push(math.multiply(logL[col], curL));
         logU.push(math.clone(M));
     }
+
+    // remove the first elements that aren't needed
     logL.shift();
     logU.shift();
+
+    // create return object
     var toReturn = [logL, logU];
     toReturn.P = P;
     return toReturn;
@@ -84,8 +88,8 @@ function decomposeLDL(M) {
         firstRange, // a temp range used for matrix operations
         secRange,   // another one
         v,          // temporary matrix used for computation
-        logA = [],       // a log of the A matrices
-        logV = [];       // a log of the V matrices
+        logA = [],  // a log of the A matrices
+        logV = [];  // a log of the V matrices
 
     for (var row = 0; row < n; row++) {
         // compute v
@@ -112,8 +116,8 @@ function decomposeLDL(M) {
         if (row === n - 1) {
             continue;
         }
-        firstRange = math.range(row + 1, n);  // j + 1:n
-        matrixIndex = math.index(firstRange, row); // (j+1:n, j)
+        firstRange = math.range(row + 1, n);        // j + 1:n
+        matrixIndex = math.index(firstRange, row);  // (j+1:n, j)
 
         // if this is the first row, no need to preform the subtraction in the algorithm
         if (row === 0) {

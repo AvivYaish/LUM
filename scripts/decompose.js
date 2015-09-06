@@ -133,7 +133,8 @@ function computeLColumn(M, v, row) {
  * both L (below the diagonal), and D (on the diagonal)
  */
 function decomposeLDL(M) {
-    var v,          // temporary matrix used for computation
+    var n = M.length,
+        v,          // temporary matrix used for computation
         logA = [],  // a log of the A matrices
         logV = [];  // a log of the V matrices
 
@@ -145,7 +146,7 @@ function decomposeLDL(M) {
         M[row][row] = v[row];
 
         // if row == n-1, nothing more to compute
-        if (row !== M.length - 1) {
+        if (row !== n - 1) {
             M = computeLColumn(M, v, row);
         }
 

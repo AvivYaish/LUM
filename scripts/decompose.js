@@ -32,20 +32,13 @@ function getRowSwapMatrix(M) {
 }
 
 /**
- * @param M matrix to decomposePLU.
- * @param swapRows if false, decomposes M to LU matrices. Otherwise, to PLU matrices.
- * @return Object [[L0, L1, L2, ...], [U0, U1, U2, ...]] that also has a P attribute
+ * @param M matrix to decomposeLU.
+ * @return Array [[L0, L1, L2, ...], [U0, U1, U2, ...]]
  */
-function decomposePLU(M, swapRows) {
+function decomposeLU(M) {
     var logL = [],  // keeps a log of the L matrices
         logU = [],  // log of U matrices
-        curL,       // the current L matrix
-        P;          // the P matrix
-
-    if (swapRows) {
-        P = getRowSwapMatrix(M);
-        M = math.multiply(P, M);
-    }
+        curL;       // the current L matrix
 
     logL.push(math.eye(M.length));
     logU.push(math.clone(M));
@@ -60,6 +53,8 @@ function decomposePLU(M, swapRows) {
                 M[row] = math.add(M[row], math.multiply(-curL[row][col], M[col]));
             }
         }
+
+        // log the matrices.
         // notice that L*curL gives the L matrix for this decomposition stage
         logL.push(math.multiply(logL[col], curL));
         logU.push(math.clone(M));
@@ -69,10 +64,7 @@ function decomposePLU(M, swapRows) {
     logL.shift();
     logU.shift();
 
-    // create return object
-    var toReturn = [logL, logU];
-    toReturn.P = P;
-    return toReturn;
+    return [logL, logU];
 }
 
 /**
@@ -106,7 +98,6 @@ function decomposeLDL(M) {
         if (v[row] === 0) {
             return [];  // No LU factorization, can't continue!
         }
-        logV.push([math.clone(v)]);  // need to insert into array so the printing will work alright
 
         M[row][row] = v[row];  // store the current diagonal value for M
 
@@ -122,6 +113,7 @@ function decomposeLDL(M) {
             M = math.subset(M, matrixIndex, math.divide(math.subset(M, matrixIndex), v[row]));
         } else {
             secRange = math.range(0, row);  // (1:j-1)
+
             M = math.subset(M, matrixIndex,
                 math.divide(
                     math.subtract(
@@ -132,6 +124,9 @@ function decomposeLDL(M) {
                     v[row])
             );
         }
+
+        // log the matrices
+        logV.push([math.clone(v)]);  // need to insert into array so the printing will work alright
         logA.push(math.clone(M));
     }
     return [logA, logV];

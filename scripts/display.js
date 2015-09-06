@@ -166,13 +166,18 @@ function presentDecomposition() {
         result,       // will hold the result
         markup = "";  // markup of the matrices to write
 
+    $("#P-div").hide();
+
     switch ($("#decomposition-type").val()) {
         case "PLU":
-            shouldShowP = true;
-            result = decomposePLU(readMatrix(), shouldShowP);
+            var M = readMatrix(),
+                P = getRowSwapMatrix(M);
+            $("#P-matrix").html(matrixMarkup(P, false));
+            result = decomposeLU(math.multiply(P, M));
+            $("#P-div").show();
             break;
         case "LU":
-            result = decomposePLU(readMatrix(), shouldShowP);
+            result = decomposeLU(readMatrix());
             break;
         case "LDLt":
             result = decomposeLDL(readMatrix());
@@ -186,11 +191,10 @@ function presentDecomposition() {
 
     // if needed, show the P matrix.
     if (shouldShowP) {
-        $("#P-div").show();
-        $("#P-matrix").html(matrixMarkup(result.P, false));
+
     }
     else {
-        $("#P-div").hide();
+
     }
 
     // shows each step of the decomposition process

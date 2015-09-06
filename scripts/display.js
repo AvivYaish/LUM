@@ -17,16 +17,19 @@ var MATRIX_ALIGN = ['left', 'right'];
 /** Max number of matrices in the same row */
 var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
 
+/**
+ * If called by a $("#div-name").scrollView(), it scrolls to the div.
+ */
+function scrollView() {
+    return this.each(function () {
+        $('html, body').animate({
+            scrollTop: $(this).offset().top
+        }, 1000);
+    });
+}
 
 $(document).ready(function () {
-    // scrollView is a new function, if called by a $("#div-name").scrollView(), it scrolls to the div.
-    $.fn.scrollView = function () {
-        return this.each(function () {
-            $('html, body').animate({
-                scrollTop: $(this).offset().top
-            }, 1000);
-        });
-    };
+    $.fn.scrollView = scrollView;
 
     $("#choose-size").click(drawMatrixInput);
     $("#decompose").click(presentDecomposition);
@@ -43,6 +46,7 @@ $(document).ready(function () {
         dropZone.addEventListener('drop', handleFileSelect, false);
     }
 });
+
 
 /**
  * Given the load event, format the file into a matrix based on the GNU Octave specification:

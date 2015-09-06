@@ -22,7 +22,12 @@
             or <br><br>
             <div id="drop-zone"><output id="list">Drop files here</output></div>
         </div>
-        <br>
+
+        <div align="center" style="display: block;">
+            <table id="matrix-data">
+            </table>
+        </div>
+
         <label for="decomposition-type">Decompose to:</label>
         <select id="decomposition-type">
             <option value="LU">LU</option>
@@ -31,23 +36,18 @@
         </select>
         <input id="decompose" type="button" value="Decompose"><br><br>
     </form>
-
-    <div align="center" style="display: block;">
-        <table id="matrix-data">
-        </table>
-    </div>
-    <br>
-</div>
-
-<div id="P-div" align="center" style="display: block;">
-    <h3>P Matrix:</h3>
-    <table id="P-matrix">
-    </table>
     <br>
 </div>
 
 <div id="decomposition" class="parent" align="center" style="display: block;">
     <h2>The decomposition:</h2>
+    <div id="P-div" align="center" style="display: block;">
+        <h3>P Matrix:</h3>
+        <table id="P-matrix">
+        </table>
+        <br>
+    </div>
+    
     <div id="step-by-step">
     </div>
 </div>

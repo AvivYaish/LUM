@@ -1,4 +1,5 @@
-/** Specifies the number of digits to show after the dot. Does not affect computation precision. */
+/** Specifies the number of digits to show after the dot. Does not affect
+ * computation precision. */
 var DIGITS_AFTER_DOT = 3;
 
 /** Delimiters for the GNU Octave matrix format. */
@@ -49,13 +50,14 @@ $(document).ready(function () {
 
 
 /**
- * Given the load event, format the file into a matrix based on the GNU Octave specification:
- * [col0, col1, ...; col0, col1, ...; ....]
+ * Given the load event, format the file into a matrix based on the GNU Octave
+ * specification: [col0, col1, ...; col0, col1, ...; ....]
  * Where ; is the row delimiter, and , is the column delimiter.
  * @param event Load event.
  */
 function loadFile(event) {
-    var matrix = event.target.result.substring(DATA_START, event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
+    var matrix = event.target.result.substring(DATA_START,
+        event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
     
     // split each row into the proper columns
     for (var row = 0; row < matrix.length; row++) {
@@ -149,7 +151,8 @@ function matrixMarkup(M, input) {
 
             // format the matrix cell according to it's data and if it is the input matrix
             if (input) {
-                markup += '<input id="' + row + '-' + col + '" ' + 'type="text" value="' + M[row][col] + '">';
+                markup += '<input id="' + row + '-' + col + '" ' +
+                    'type="text" value="' + M[row][col] + '">';
             } else if (isInt(M[row][col])) {
                 markup +=  M[row][col];
             } else {

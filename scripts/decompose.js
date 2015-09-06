@@ -7,13 +7,13 @@ var FIRST_RESULT_MATRIX = 0;
 var NO_DECOMP_RESULT = [];
 
 /**
+ * Moving rows such that each column's max value is on the diagonal ensures us the
+ * resulting matrix has a LU decomposition. The function will search for the max
+ * value in each column and will generate the P matrix
  * @param M input matrix.
  * @return P a matrix such that P*M is a matrix that has an LU decomposition.
  */
 function getRowSwapMatrix(M) {
-    // Moving rows such that each column's max value is on the diagonal ensures us the
-    // resulting matrix has a LU decomposition. The function will search for the max
-    // value in each column and will generate the P matrix
     var P = math.eye(M.length);  // the P matrix is initially the identity matrix
 
     for (var col = 0; col < M.length; col++) {
@@ -121,7 +121,6 @@ function computeLColumn(M, v, row) {
         M = math.subset(M, matrixIndex, math.divide(math.subset(M, matrixIndex), v[row]));
     } else {
         secRange = math.range(0, row);  // (1:j-1)
-
         M = math.subset(M, matrixIndex,
             math.divide(
                 math.subtract(
@@ -129,7 +128,8 @@ function computeLColumn(M, v, row) {
                     math.multiply(
                         math.subset(M, math.index(firstRange, secRange)),
                         math.subset(v, math.index(secRange)))),
-                v[row])
+                v[row]
+            )
         );
     }
     return M;
@@ -160,7 +160,7 @@ function decomposeLDL(M) {
         }
 
         // log the matrices
-        logV.push([math.clone(v)]);  // need to insert into array so the printing will work alright
+        logV.push([math.clone(v)]);  // need to insert into array for printing purposes
         logA.push(math.clone(M));
     }
 

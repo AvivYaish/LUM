@@ -111,7 +111,7 @@ function computeLColumn(M, v, row) {
     var n = M.length,
         matrixIndex,// an index used for matrix operations
         firstRange, // a temp range used for matrix operations
-        secRange,   // another one
+        secRange;   // another one
 
     firstRange = math.range(row + 1, n);        // j + 1:n
     matrixIndex = math.index(firstRange, row);  // (j+1:n, j)

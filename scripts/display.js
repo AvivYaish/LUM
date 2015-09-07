@@ -161,8 +161,9 @@ function matrixMarkup(M, input) {
 /**
  * Prints the result matrices.
  * @param result Array containing the result matrices to print.
+ * @return String The markup for the result matrices.
  */
-function printResultMatrices(result) {
+function resultMatricesMarkup(result) {
     var markup = "";
     // shows each step of the decomposition process
     for (var step = 0; step < result[FIRST_RESULT_MATRIX].length; step++) {
@@ -175,8 +176,7 @@ function printResultMatrices(result) {
         }
         markup += "</div><br>";
     }
-
-    $("#step-by-step").html(markup);
+    return markup;
 }
 
 /**
@@ -185,6 +185,7 @@ function printResultMatrices(result) {
 function presentDecomposition() {
     var P,                  // the P matrix, if it's needed
         M = readMatrix(),   // the input matrix
+        markup,             // the markup for the result matrices
         result;             // will hold the result
 
     $("#P-div").hide();
@@ -205,10 +206,11 @@ function presentDecomposition() {
     }
 
     if (result === NO_DECOMP_RESULT) {
-        $("#step-by-step").html("Can't decompose!");
+        markup = "Can't decompose!";
     } else {
-        printResultMatrices(result);
+        markup = resultMatricesMarkup(result);
     }
 
+    $("#step-by-step").html(markup);
     $("#decomposition").show().scrollView();
 }

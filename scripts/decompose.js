@@ -166,3 +166,44 @@ function decomposeLDL(M) {
 
     return [logA, logV];
 }
+ /**  new version, doesn't work
+function decomposeLDL(M) {
+    var n = M.length,
+        L = [],
+        d = [],
+        curCol,
+        temp,
+        logA = [],  // a log of the A matrices
+        logL = [];  // a log of the L matrices
+
+    //M = math.matrix(M);
+    for (var row = 0; row < n; row++) {
+        curCol = math.index(math.range(0, n), row);
+        d.push(M[row][row]);
+        if (d[row] + 1 > 1) {
+            temp = math.subset(M, curCol);
+            //window.alert(temp);
+            L.push(math.divide(temp, d[row]));
+            M = math.subset(M, curCol, math.subtract(math.subset(M, curCol),
+                                                     math.dotMultiply(L[row], temp)));
+        } else {
+            L.push(math.zeros(n, 1));
+            L[row][row] = [1];
+        }
+        // log the matrices
+        logA.push(math.clone(M));
+        logL.push(math.clone(M));
+    }
+
+    // validity check
+    temp = math.eye(n);
+    var temp2 = math.transpose(math.squeeze(L));
+    for (var row = 0; row < n; row++) {
+        temp[row][row] = d[row];
+    }
+    temp = math.matrix(temp);
+    window.alert(temp2);
+    window.alert(math.multiply(math.multiply(temp2, temp), math.transpose(temp2)));
+
+    return [logA, logL];
+}*/

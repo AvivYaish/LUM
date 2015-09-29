@@ -18,14 +18,14 @@ function getRowSwapMatrix(M) {
 
     for (var col = 0; col < M.length; col++) {
         var maxRow = col;
-        
+
         // search for max value
         for (var row = col; row < M.length; row++) {
             if (M[row][col] > M[maxRow][col]) {
                 maxRow = row;
             }
         }
-        
+
         // change the P matrix according to the max value's row
         if (maxRow != col) {
             var temp = P[col];
@@ -142,7 +142,7 @@ function computeLColumn(M, v, row) {
  * both L (below the diagonal), and D (on the diagonal)
  */
 /**
-function decomposeLDL(M) {
+ function decomposeLDL(M) {
     var n = M.length,
         v,          // temporary matrix used for computation
         logA = [],  // a log of the A matrices
@@ -167,58 +167,56 @@ function decomposeLDL(M) {
 
     return [logA, logV];
 }
-*/
- /**  new version, doesn't work
-  */
+ */
+/**  new version, doesn't work
+ */
 function decomposeLDL(M) {
-     var n = M.length,
+    var n = M.length,
         L = [],
-        d = [],
-        D,
+        D = math.eye(n),
         curColIndex,    // the indices for the current column
         curColValues,   // the values of the current column
-        logM = [];      // a log of the A matrices
+        logM = [],      // a log of the A matrices
+        logL = [],
+        logD = [];
 
     // note that L starts empty, and in each iteration we add a single column to it.
     for (var row = 0; row < n; row++) {
+        D[row][row] = M[row][row];
+
         // insert to curColIndex the math.js representation for the indices of the current column
         curColIndex = math.index(math.range(0, n), row);
-        d.push(M[row][row]);    //
 
-        if (d[row] + 1 > 1) {
+        if (D[row][row] + 1 > 1) {
             // using curColIndex, the function math.subset will get the current column values from the matrix M
             curColValues = math.subset(M, curColIndex);
 
-            // add to L
-            L.push(math.divide(curColValues, d[row]));
+            // add a new column to L and update M
+            L.push(math.divide(curColValues, D[row][row]));
             M = math.subset(M, curColIndex, math.subtract(math.subset(M, curColIndex),
                                                           math.dotMultiply(L[row], curColValues)));
         } else {
-            //
+            // add a new column to L
             L.push(math.zeros(n, 1));
             L[row][row] = [1];
         }
 
         // log the matrices
         logM.push(math.clone(M));
+        logL.push([[]]);
+        logD.push(math.clone(D));
     }
-
+    
     // notice that L currently looks like this:
     // [[[L11], [L12], ...], [[L21], [L22], ...], ...]
     // squeeze "flattens" each row to look like this: [Li1, Li2, Li3, ...]
     // also, L currently is actually Lt, so transpose it.
     L = math.transpose(math.squeeze(L));
-
-    // Generate D from d
-    D = math.eye(n);
-    for (var row = 0; row < n; row++) {
-        D[row][row] = d[row];
-    }
+    logL.pop();
+    logL.push(math.clone(L));
 
     // validity check, code will be removed after fixing the decomposition
-    window.alert(L);
-    window.alert(D);
     window.alert(math.multiply(math.multiply(L, D), math.transpose(L)));
 
-    return [logM, L, D];
+    return [logM, logL, logD];
 }

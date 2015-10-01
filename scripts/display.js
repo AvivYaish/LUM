@@ -108,7 +108,7 @@ function drawMatrixInput(event, M) {
         $("#list").html("Drop files here");
     }
 
-    $("#matrix-data").html(matrixMarkup(M, true));
+    $("#matrix-data").html(generateMatrixMarkup(M, true));
     $("#matrix-data-div").show();
 }
 
@@ -116,7 +116,7 @@ function drawMatrixInput(event, M) {
  * Reads the input matrix and returns it as an array.
  * @return {*} input matrix
  */
-function readMatrix() {
+function readInputMatrix() {
     var size = parseInt($("#matrix-size").val());
     var M = math.zeros(size, size);
     for (var row = 0; row < size; row++) {
@@ -133,7 +133,7 @@ function readMatrix() {
  * @param input true if should be a matrix with input, false if not.
  * @return {string}
  */
-function matrixMarkup(M, input) {
+function generateMatrixMarkup(M, input) {
     var markup = "<table>";
     for (var row = 0; row < M.length; row++) {
         markup += "<tr>";
@@ -157,46 +157,54 @@ function matrixMarkup(M, input) {
 }
 
 /**
+ * Given an array of step by step matrices, generate table markup for it's data.
+ * @param matrices An array of step by step matrices.
+ * @return {string}
+ */
+function generateStepByStepMarkup(matrices) {
+    var markup = "<div> <h2>Step by step:</h2> <br>";
+    // shows each step of the decomposition process
+    for (var step = 0; step < matrices[FIRST_RESULT_MATRIX].length; step++) {
+        markup += "<div> <h3 class='clear'>Step " + (step + 1) + "</h3>";
+        for (var matrixNum = 0; matrixNum < matrices.length; matrixNum++) {
+            markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
+                "<h4>" + matrices[matrixNum][RESULT_MATRIX_NAME] + " matrix</h4>" +
+                generateMatrixMarkup(matrices[matrixNum][RESULT_MATRIX_DATA][step], false) +
+                "</div>";
+        }
+        markup += "</div>";
+    }
+    return markup + "</div>";
+}
+
+/**
+ * Prints the extras matrices (P, L, D, etc').
+ * @param result Array containing the result matrices.
+ * @return String The markup for the extras matrices.
+ */
+function generateExtrasMatricesMarkup(result) {
+    var markup = "<div>";
+    for (var matrixNum = STEP_MATRICES_INDEX + 1; matrixNum < result.length; matrixNum++) {
+        markup += "<h3>" + result[matrixNum][RESULT_MATRIX_NAME]  + " matrix:</h3>" +
+            generateMatrixMarkup(result[matrixNum][RESULT_MATRIX_DATA], false) + "<br>";
+    }
+    return markup + "</div> <br>";
+}
+
+/**
  * Prints the result matrices.
  * @param result Array containing the result matrices to print.
  * @return String The markup for the result matrices.
  */
-function resultMatricesMarkup(result) {
-    var stepByStepMarkup, extrasMarkup;
-    var matrixNum;
-
-    // generate the step by step markup
-    stepByStepMarkup = "<div> <h2>Step by step:</h2> <br>";
-    // shows each step of the decomposition process
-    for (var step = 0; step < result[STEP_MATRICES_INDEX][FIRST_RESULT_MATRIX].length; step++) {
-        stepByStepMarkup += "<div>" +
-            "<h3 class='clear'>Step " + (step + 1) + "</h3>";
-        for (matrixNum = 0; matrixNum < result[STEP_MATRICES_INDEX].length; matrixNum++) {
-            stepByStepMarkup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
-                "<h4>" + result[STEP_MATRICES_INDEX][matrixNum][RESULT_MATRIX_NAME] + " matrix</h4>" +
-                        matrixMarkup(result[STEP_MATRICES_INDEX][matrixNum][RESULT_MATRIX_DATA][step], false) +
-                "</div>";
-        }
-        stepByStepMarkup += "</div>";
-    }
-    stepByStepMarkup += "</div>";
-
-    // generate the extras matrices markup (P, L, D matrices, etc')
-    extrasMarkup = "<div>";
-    for (matrixNum = STEP_MATRICES_INDEX + 1; matrixNum < result.length; matrixNum++) {
-        extrasMarkup += "<h3>" + result[matrixNum][RESULT_MATRIX_NAME]  + " matrix:</h3>" +
-                matrixMarkup(result[matrixNum][RESULT_MATRIX_DATA], false) + "<br>";
-    }
-    extrasMarkup += "</div> <br>";
-
-    return extrasMarkup + stepByStepMarkup;
+function generateResultMatricesMarkup(result) {
+    return generateExtrasMatricesMarkup(result) + generateStepByStepMarkup(result[STEP_MATRICES_INDEX]);
 }
 
 /**
  * Presents the decomposition.
  */
 function presentDecomposition() {
-    var M = readMatrix(),   // the input matrix
+    var M = readInputMatrix(),   // the input matrix
         markup,             // the markup for the result matrices
         result;             // will hold the result
 
@@ -215,7 +223,7 @@ function presentDecomposition() {
     if (result === NO_DECOMP_RESULT) {
         markup = "Can't decompose! Try pivoting.";
     } else {
-        markup = resultMatricesMarkup(result);
+        markup = generateResultMatricesMarkup(result);
     }
 
     $("#result").html(markup);

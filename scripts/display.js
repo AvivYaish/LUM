@@ -18,12 +18,6 @@ var MATRIX_ALIGN = ['left', 'right'];
 /** Max number of matrices in the same row */
 var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
 
-/** The header of a matrix in the results. */
-var MATRIX_HEADERR = 0;
-
-/** The data of a matrix in the results. */
-var MATRIX_DATA = 1;
-
 /**
  * If called by a $("#div-name").scrollView(), it scrolls to the div.
  */
@@ -140,7 +134,7 @@ function readMatrix() {
  * @return {string}
  */
 function matrixMarkup(M, input) {
-    var markup = "";
+    var markup = "<table>";
     for (var row = 0; row < M.length; row++) {
         markup += "<tr>";
         for (var col = 0; col < M[row].length; col++) {
@@ -159,7 +153,7 @@ function matrixMarkup(M, input) {
         }
         markup += "</tr>";
     }
-    return markup;
+    return markup + "</table>";
 }
 
 /**
@@ -175,12 +169,13 @@ function resultMatricesMarkup(result) {
     stepByStepMarkup = "<div> <h2>Step by step:</h2> <br>";
     // shows each step of the decomposition process
     for (var step = 0; step < result[STEP_MATRICES_INDEX][FIRST_RESULT_MATRIX].length; step++) {
-        stepByStepMarkup += "<div> <h3 class='clear'>Step " + (step + 1) + "</h3>";
+        stepByStepMarkup += "<div>" +
+            "<h3 class='clear'>Step " + (step + 1) + "</h3>";
         for (matrixNum = 0; matrixNum < result[STEP_MATRICES_INDEX].length; matrixNum++) {
             stepByStepMarkup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
-                "<h4>" + result[STEP_MATRICES_INDEX][matrixNum][MATRIX_HEADERR] + "</h4><table>" +
-                matrixMarkup(result[STEP_MATRICES_INDEX][matrixNum][MATRIX_DATA][step], false) +
-                "</table></div>";
+                "<h4>" + result[STEP_MATRICES_INDEX][matrixNum][RESULT_MATRIX_NAME] + " matrix</h4>" +
+                        matrixMarkup(result[STEP_MATRICES_INDEX][matrixNum][RESULT_MATRIX_DATA][step], false) +
+                "</div>";
         }
         stepByStepMarkup += "</div>";
     }
@@ -189,8 +184,8 @@ function resultMatricesMarkup(result) {
     // generate the extras matrices markup (P, L, D matrices, etc')
     extrasMarkup = "<div>";
     for (matrixNum = STEP_MATRICES_INDEX + 1; matrixNum < result.length; matrixNum++) {
-        extrasMarkup += "<h3>" + result[matrixNum][MATRIX_HEADERR]  + ":</h3> <table>" +
-                        matrixMarkup(result[matrixNum][MATRIX_DATA], false)+ "</table> <br>";
+        extrasMarkup += "<h3>" + result[matrixNum][RESULT_MATRIX_NAME]  + " matrix:</h3>" +
+                matrixMarkup(result[matrixNum][RESULT_MATRIX_DATA], false) + "<br>";
     }
     extrasMarkup += "</div> <br>";
 

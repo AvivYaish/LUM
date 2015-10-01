@@ -23,6 +23,12 @@ var NO_DECOMP_RESULT = [];
 /** The place of the steps matrices in the result */
 var STEP_MATRICES_INDEX = 0;
 
+/** The header of a matrix in the results. */
+var RESULT_MATRIX_NAME = 0;
+
+/** The data of a matrix in the results. */
+var RESULT_MATRIX_DATA = 1;
+
 /**
  * @param M Matrix to decompose into LU components.
  * @return Array [[[L0, L1, L2, ...], [U0, U1, U2, ...]]]
@@ -61,7 +67,7 @@ function decomposeLU(M) {
     logL.shift();
     logU.shift();
 
-    return [[["L matrix", logL], ["U matrix", logU]]];
+    return [[["L", logL], ["U", logU]]];
 }
 
 /**
@@ -101,7 +107,7 @@ function generateP(M) {
 function decomposePLU(M) {
     var P = generateP(M),
         results = decomposeLU(math.multiply(P, M));
-    results.push(["P matrix", P]);
+    results.push(["P", P]);
     return results;
 }
 
@@ -238,6 +244,6 @@ function decomposeLDL(M) {
     // also, L currently is actually Lt, so transpose it.
     L = math.transpose(math.squeeze(L));
 
-    return [[["A matrix", logM]], ["L matrix", L], ["D matrix", D],
+    return [[["A", logM]], ["L", L], ["D", D],
             ["Validity check: LDLt", math.multiply(math.multiply(L, D), math.transpose(L))]];
 }

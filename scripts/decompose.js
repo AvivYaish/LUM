@@ -31,7 +31,7 @@ var RESULT_MATRIX_DATA = 1;
 
 /**
  * @param M Matrix to decompose into LU components.
- * @return Array [[[L0, L1, L2, ...], [U0, U1, U2, ...]]]
+ * @return Result matrix.
  */
 function decomposeLU(M) {
     var logL = [],  // keeps a log of the L matrices
@@ -102,7 +102,7 @@ function generateP(M) {
 
 /**
  * @param M Matrix to decompose into PLU components.
- * @return Array [[L0, L1, L2, ...], [U0, U1, U2, ...], ["P matrix", P]]
+ * @return Result matrix.
  */
 function decomposePLU(M) {
     var P = generateP(M),
@@ -174,10 +174,9 @@ function computeLColumn(M, v, row) {
 }
 
 /**
- * Based on the algorithm in p. 139 of Matrix Computations by Golub-Van Loan
+ * Based on the algorithm in p. 139 of Matrix Computations by Golub-Van Loan.
  * @param M Matrix to decompose into LDLt components.
- * @return Array [[A0, A1, A2, ...], [V0, V1, V2, ...]], where A contains
- * both L (below the diagonal), and D (on the diagonal)
+ * @return Result matrix.
  */
 /**
  function decomposeLDL(M) {

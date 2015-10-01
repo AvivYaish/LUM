@@ -204,9 +204,9 @@ function generateResultMatricesMarkup(result) {
  * Presents the decomposition.
  */
 function presentDecomposition() {
-    var M = readInputMatrix(),   // the input matrix
-        markup,             // the markup for the result matrices
-        result;             // will hold the result
+    var M = readInputMatrix(),  // the input matrix
+        markup,                 // the markup for the result matrices
+        result;                 // will hold the result
 
     switch ($("#decomposition-type").val()) {
         case "PLU":

@@ -1,44 +1,23 @@
 math.config({matrix: 'array'});
 
-/** */
+/***
+ * Notice the structure of the result matrices in all decomposition algorithms is:
+ * [[stepByStepMatrix1, stepByStepMatrix2, ...], [extrasMatrix1 name, extrasMatrix1 data],
+ *                                               [extrasMatrix2 name, extrasMatrix2 data], ...]
+ */
+
+/** The first result matrix in the results. */
 var FIRST_RESULT_MATRIX = 0;
 
 /** The result to return if there is no decomposition */
 var NO_DECOMP_RESULT = [];
 
-/**
- * Moving rows such that each column's max value is on the diagonal ensures us the
- * resulting matrix has a LU decomposition. The function will search for the max
- * value in each column and will generate the P matrix
- * @param M input matrix.
- * @return P a matrix such that P*M is a matrix that has an LU decomposition.
- */
-function getRowSwapMatrix(M) {
-    var P = math.eye(M.length);  // the P matrix is initially the identity matrix
-
-    for (var col = 0; col < M.length; col++) {
-        var maxRow = col;
-
-        // search for max value
-        for (var row = col; row < M.length; row++) {
-            if (M[row][col] > M[maxRow][col]) {
-                maxRow = row;
-            }
-        }
-
-        // change the P matrix according to the max value's row
-        if (maxRow != col) {
-            var temp = P[col];
-            P[col] = P[maxRow];
-            P[maxRow] = temp;
-        }
-    }
-    return P;
-}
+/** The place of the steps matrices in the result */
+var STEP_MATRICES_INDEX = 0;
 
 /**
  * @param M Matrix to decompose into LU components.
- * @return Array [[L0, L1, L2, ...], [U0, U1, U2, ...]]
+ * @return Array [[[L0, L1, L2, ...], [U0, U1, U2, ...]]]
  */
 function decomposeLU(M) {
     var logL = [],  // keeps a log of the L matrices
@@ -73,7 +52,48 @@ function decomposeLU(M) {
     logL.shift();
     logU.shift();
 
-    return [logL, logU];
+    return [[logL, logU]];
+}
+
+/**
+ * Moving rows such that each column's max value is on the diagonal ensures us the
+ * resulting matrix has a LU decomposition. The function will search for the max
+ * value in each column and will generate the P matrix.
+ * @param M input matrix.
+ * @return P a matrix such that P*M is a matrix that has an LU decomposition.
+ */
+function generateP(M) {
+    var P = math.eye(M.length);  // the P matrix is initially the identity matrix
+
+    for (var col = 0; col < M.length; col++) {
+        var maxRow = col;
+
+        // search for max value
+        for (var row = col; row < M.length; row++) {
+            if (M[row][col] > M[maxRow][col]) {
+                maxRow = row;
+            }
+        }
+
+        // change the P matrix according to the max value's row
+        if (maxRow != col) {
+            var temp = P[col];
+            P[col] = P[maxRow];
+            P[maxRow] = temp;
+        }
+    }
+    return P;
+}
+
+/**
+ * @param M Matrix to decompose into PLU components.
+ * @return Array [[L0, L1, L2, ...], [U0, U1, U2, ...], ["P matrix", P]]
+ */
+function decomposePLU(M) {
+    var P = generateP(M),
+        results = decomposeLU(math.multiply(P, M));
+    results.push(["P matrix", P]);
+    return results;
 }
 
 /**
@@ -176,9 +196,7 @@ function decomposeLDL(M) {
         D = math.eye(n),
         curColIndex,    // the indices for the current column
         curColValues,   // the values of the current column
-        logM = [],      // a log of the A matrices
-        logL = [],
-        logD = [];
+        logM = [];      // a log of the A matrices
 
     // note that L starts empty, and in each iteration we add a single column to it.
     for (var row = 0; row < n; row++) {
@@ -203,8 +221,6 @@ function decomposeLDL(M) {
 
         // log the matrices
         logM.push(math.clone(M));
-        logL.push([[]]);
-        logD.push(math.clone(D));
     }
     
     // notice that L currently looks like this:
@@ -212,11 +228,7 @@ function decomposeLDL(M) {
     // squeeze "flattens" each row to look like this: [Li1, Li2, Li3, ...]
     // also, L currently is actually Lt, so transpose it.
     L = math.transpose(math.squeeze(L));
-    logL.pop();
-    logL.push(math.clone(L));
 
-    // validity check, code will be removed after fixing the decomposition
-    window.alert(math.multiply(math.multiply(L, D), math.transpose(L)));
-
-    return [logM, logL, logD];
+    return [[logM], ["L matrix", L], ["D matrix", D],
+            ["Validity check", math.multiply(math.multiply(L, D), math.transpose(L))]];
 }

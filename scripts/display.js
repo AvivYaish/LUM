@@ -18,6 +18,12 @@ var MATRIX_ALIGN = ['left', 'right'];
 /** Max number of matrices in the same row */
 var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
 
+/** The header of an extras matrix. */
+var EXTRAS_MATRIX_HEADERR = 0;
+
+/** The data of an extras matrix. */
+var EXTRAS_MATRIX_DATA = 1;
+
 /**
  * If called by a $("#div-name").scrollView(), it scrolls to the div.
  */
@@ -34,11 +40,10 @@ $(document).ready(function () {
 
     $("#choose-size").click(drawMatrixInput);
     $("#decompose").click(presentDecomposition);
-    $("#P-div").hide();
     $("#matrix-data-div").hide();
     $("#decomposition").hide();
 
-    // Show the load from file div only if possible
+    // Show the load from file div only if supported by browser
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
         $("#load-from-file-div").hide();
     } else {
@@ -143,8 +148,7 @@ function matrixMarkup(M, input) {
 
             // format the matrix cell according to it's data and if it is the input matrix
             if (input) {
-                markup += '<input id="' + row + '-' + col + '" ' +
-                    'type="text" value="' + M[row][col] + '">';
+                markup += '<input id="' + row + '-' + col + '" ' + 'type="text" value="' + M[row][col] + '">';
             } else if (Number.isInteger(M[row][col])) {
                 markup +=  M[row][col];
             } else {
@@ -164,38 +168,46 @@ function matrixMarkup(M, input) {
  * @return String The markup for the result matrices.
  */
 function resultMatricesMarkup(result) {
-    var markup = "";
+    var stepByStepMarkup, extrasMarkup;
+    var matrixNum;
+
+    // generate the step by step markup
+    stepByStepMarkup = "<div> <h3>Step by step:</h3> <br>";
     // shows each step of the decomposition process
-    for (var step = 0; step < result[FIRST_RESULT_MATRIX].length; step++) {
-        markup += "<div><h3 class='clear'>Step " + step + "</h3>";
-        for (var matrixNum = 0; matrixNum < result.length; matrixNum++) {
-            markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
+    for (var step = 0; step < result[STEP_MATRICES_INDEX][FIRST_RESULT_MATRIX].length; step++) {
+        stepByStepMarkup += "<div><h3 class='clear'>Step " + step + "</h3>";
+        for (matrixNum = 0; matrixNum < result[STEP_MATRICES_INDEX].length; matrixNum++) {
+            stepByStepMarkup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
                 "<h4>Matrix #" + matrixNum + "</h4><table>" +
-                matrixMarkup(result[matrixNum][step], false) +
+                matrixMarkup(result[STEP_MATRICES_INDEX][matrixNum][step], false) +
                 "</table></div>";
         }
-        markup += "</div><br>";
+        stepByStepMarkup += "</div> <br>";
     }
-    return markup;
+    stepByStepMarkup += "</div>";
+
+    // generate the extras matrices markup (P, L, D matrices, etc')
+    extrasMarkup = "<div>";
+    for (matrixNum = STEP_MATRICES_INDEX + 1; matrixNum < result.length; matrixNum++) {
+        extrasMarkup += "<h3>" + result[matrixNum][EXTRAS_MATRIX_HEADERR]  + ":</h3> <table>" +
+                        matrixMarkup(result[matrixNum][EXTRAS_MATRIX_DATA], false)+ "</table>";
+    }
+    extrasMarkup += "</div> <br>";
+
+    return extrasMarkup + stepByStepMarkup;
 }
 
 /**
  * Presents the decomposition.
  */
 function presentDecomposition() {
-    var P,                  // the P matrix, if it's needed
-        M = readMatrix(),   // the input matrix
+    var M = readMatrix(),   // the input matrix
         markup,             // the markup for the result matrices
         result;             // will hold the result
 
-    $("#P-div").hide();
-
     switch ($("#decomposition-type").val()) {
         case "PLU":
-            P = getRowSwapMatrix(M);
-            $("#P-matrix").html(matrixMarkup(P, false));
-            $("#P-div").show();
-            result = decomposeLU(math.multiply(P, M));
+            result = decomposePLU(M);
             break;
         case "LU":
             result = decomposeLU(M);
@@ -206,11 +218,11 @@ function presentDecomposition() {
     }
 
     if (result === NO_DECOMP_RESULT) {
-        markup = "Can't decompose!";
+        markup = "Can't decompose! Try pivoting.";
     } else {
         markup = resultMatricesMarkup(result);
     }
 
-    $("#step-by-step").html(markup);
+    $("#result").html(markup);
     $("#decomposition").show().scrollView();
 }

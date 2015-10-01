@@ -18,11 +18,11 @@ var MATRIX_ALIGN = ['left', 'right'];
 /** Max number of matrices in the same row */
 var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
 
-/** The header of an extras matrix. */
-var EXTRAS_MATRIX_HEADERR = 0;
+/** The header of a matrix in the results. */
+var MATRIX_HEADERR = 0;
 
-/** The data of an extras matrix. */
-var EXTRAS_MATRIX_DATA = 1;
+/** The data of a matrix in the results. */
+var MATRIX_DATA = 1;
 
 /**
  * If called by a $("#div-name").scrollView(), it scrolls to the div.
@@ -178,8 +178,8 @@ function resultMatricesMarkup(result) {
         stepByStepMarkup += "<div><h3 class='clear'>Step " + step + "</h3>";
         for (matrixNum = 0; matrixNum < result[STEP_MATRICES_INDEX].length; matrixNum++) {
             stepByStepMarkup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
-                "<h4>Matrix #" + matrixNum + "</h4><table>" +
-                matrixMarkup(result[STEP_MATRICES_INDEX][matrixNum][step], false) +
+                "<h4>" + result[STEP_MATRICES_INDEX][matrixNum][MATRIX_HEADERR] + "</h4><table>" +
+                matrixMarkup(result[STEP_MATRICES_INDEX][matrixNum][MATRIX_DATA][step], false) +
                 "</table></div>";
         }
         stepByStepMarkup += "</div> <br>";
@@ -189,8 +189,8 @@ function resultMatricesMarkup(result) {
     // generate the extras matrices markup (P, L, D matrices, etc')
     extrasMarkup = "<div>";
     for (matrixNum = STEP_MATRICES_INDEX + 1; matrixNum < result.length; matrixNum++) {
-        extrasMarkup += "<h3>" + result[matrixNum][EXTRAS_MATRIX_HEADERR]  + ":</h3> <table>" +
-                        matrixMarkup(result[matrixNum][EXTRAS_MATRIX_DATA], false)+ "</table>";
+        extrasMarkup += "<h3>" + result[matrixNum][MATRIX_HEADERR]  + ":</h3> <table>" +
+                        matrixMarkup(result[matrixNum][MATRIX_DATA], false)+ "</table>";
     }
     extrasMarkup += "</div> <br>";
 

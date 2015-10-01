@@ -2,8 +2,16 @@ math.config({matrix: 'array'});
 
 /***
  * Notice the structure of the result matrices in all decomposition algorithms is:
- * [[stepByStepMatrix1, stepByStepMatrix2, ...], [extrasMatrix1 name, extrasMatrix1 data],
- *                                               [extrasMatrix2 name, extrasMatrix2 data], ...]
+ * [
+ *  [
+ *   [stepByStepMatrix1 name, stepByStepMatrix1 data],
+ *   [stepByStepMatrix2 name, stepByStepMatrix2 data],
+ *   ...
+ *  ],
+ *  [extrasMatrix1 name, extrasMatrix1 data],
+ *  [extrasMatrix2 name, extrasMatrix2 data],
+ *  ...
+ * ]
  */
 
 /** The first result matrix in the results. */
@@ -52,7 +60,7 @@ function decomposeLU(M) {
     logL.shift();
     logU.shift();
 
-    return [[logL, logU]];
+    return [[["L matrix", logL], ["U matrix", logU]]];
 }
 
 /**
@@ -229,6 +237,6 @@ function decomposeLDL(M) {
     // also, L currently is actually Lt, so transpose it.
     L = math.transpose(math.squeeze(L));
 
-    return [[logM], ["L matrix", L], ["D matrix", D],
+    return [[["M matrix", logM]], ["L matrix", L], ["D matrix", D],
             ["Validity check", math.multiply(math.multiply(L, D), math.transpose(L))]];
 }

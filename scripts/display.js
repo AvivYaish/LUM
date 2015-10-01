@@ -172,17 +172,17 @@ function resultMatricesMarkup(result) {
     var matrixNum;
 
     // generate the step by step markup
-    stepByStepMarkup = "<div> <h3>Step by step:</h3> <br>";
+    stepByStepMarkup = "<div> <h2>Step by step:</h2> <br>";
     // shows each step of the decomposition process
     for (var step = 0; step < result[STEP_MATRICES_INDEX][FIRST_RESULT_MATRIX].length; step++) {
-        stepByStepMarkup += "<div><h3 class='clear'>Step " + step + "</h3>";
+        stepByStepMarkup += "<div> <h3 class='clear'>Step " + (step + 1) + "</h3>";
         for (matrixNum = 0; matrixNum < result[STEP_MATRICES_INDEX].length; matrixNum++) {
             stepByStepMarkup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +
                 "<h4>" + result[STEP_MATRICES_INDEX][matrixNum][MATRIX_HEADERR] + "</h4><table>" +
                 matrixMarkup(result[STEP_MATRICES_INDEX][matrixNum][MATRIX_DATA][step], false) +
                 "</table></div>";
         }
-        stepByStepMarkup += "</div> <br>";
+        stepByStepMarkup += "</div>";
     }
     stepByStepMarkup += "</div>";
 
@@ -190,7 +190,7 @@ function resultMatricesMarkup(result) {
     extrasMarkup = "<div>";
     for (matrixNum = STEP_MATRICES_INDEX + 1; matrixNum < result.length; matrixNum++) {
         extrasMarkup += "<h3>" + result[matrixNum][MATRIX_HEADERR]  + ":</h3> <table>" +
-                        matrixMarkup(result[matrixNum][MATRIX_DATA], false)+ "</table>";
+                        matrixMarkup(result[matrixNum][MATRIX_DATA], false)+ "</table> <br>";
     }
     extrasMarkup += "</div> <br>";
 

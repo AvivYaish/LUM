@@ -37,7 +37,7 @@ function decomposeLU(M) {
 
     for (var col = 0; col < M.length - 1; col++) {
         curL = math.eye(M.length);
-        
+
         // need to divide by M[col][col], so if it's 0 decomposition is impossible!
         if (M[col][col] === 0) {
             return NO_DECOMP_RESULT;
@@ -238,6 +238,6 @@ function decomposeLDL(M) {
     // also, L currently is actually Lt, so transpose it.
     L = math.transpose(math.squeeze(L));
 
-    return [[["M matrix", logM]], ["L matrix", L], ["D matrix", D],
-            ["Validity check", math.multiply(math.multiply(L, D), math.transpose(L))]];
+    return [[["A matrix", logM]], ["L matrix", L], ["D matrix", D],
+            ["Validity check: LDLt", math.multiply(math.multiply(L, D), math.transpose(L))]];
 }

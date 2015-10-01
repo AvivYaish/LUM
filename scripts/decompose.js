@@ -37,13 +37,14 @@ function decomposeLU(M) {
 
     for (var col = 0; col < M.length - 1; col++) {
         curL = math.eye(M.length);
+        
+        // need to divide by M[col][col], so if it's 0 decomposition is impossible!
+        if (M[col][col] === 0) {
+            return NO_DECOMP_RESULT;
+        }
 
         // generate the curL matrix, and use it to zero out the current column in U
         for (var row = col + 1; row < M.length; row++) {
-            // need to divide by M[col][col], so if it's 0 decomposition is impossible!
-            if (M[col][col] === 0) {
-                return NO_DECOMP_RESULT;
-            }
             if (M[row][col] !== 0) {
                 curL[row][col] = M[row][col] / M[col][col];
                 M[row] = math.add(M[row], math.multiply(-curL[row][col], M[col]));

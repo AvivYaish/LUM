@@ -107,6 +107,9 @@ function generateP(M) {
 function decomposePLU(M) {
     var P = generateP(M),
         results = decomposeLU(math.multiply(P, M));
+    if (results === NO_DECOMP_RESULT) {
+        return NO_DECOMP_RESULT;
+    }
     results.push(["P", P]);
     return results;
 }
@@ -200,7 +203,7 @@ function computeLColumn(M, v, row) {
         logA.push(math.clone(M));
     }
 
-    return [logA, logV];
+    return [[["A", logA], ["V", logV]]];
 }
  */
 /**  new version, doesn't work

@@ -55,8 +55,8 @@ $(document).ready(function () {
  * @param event Load event.
  */
 function loadFile(event) {
-    var matrix = event.target.result.substring(DATA_START,
-        event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
+    var matrix =
+        event.target.result.substring(DATA_START, event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
     
     // split each row into the proper columns
     for (var row = 0; row < matrix.length; row++) {
@@ -71,12 +71,15 @@ function loadFile(event) {
  * @param event File dropping event.
  */
 function handleFileSelect(event) {
+    var file,
+        reader;
+
     event.stopPropagation();
     event.preventDefault();
     $("#matrix-data").html('');
 
-    var file = event.dataTransfer.files[0]; // FileList object.
-    var reader = new FileReader();
+    file = event.dataTransfer.files[0]; // FileList object.
+    reader = new FileReader();
 
     $("#list").html('<ul>File selected: <br><li><strong>' + encodeURI(file.name) + '</li></ul>');
     reader.onload = loadFile;
@@ -117,8 +120,8 @@ function drawMatrixInput(event, M) {
  * @return {*} input matrix
  */
 function readInputMatrix() {
-    var size = parseInt($("#matrix-size").val());
-    var M = math.zeros(size, size);
+    var size = parseInt($("#matrix-size").val()),
+        M = math.zeros(size, size);
     for (var row = 0; row < size; row++) {
         for (var col = 0; col < size; col++) {
             M[row][col] = parseInt($("#" + row + "-" + col + "").val());

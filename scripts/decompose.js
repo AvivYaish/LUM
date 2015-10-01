@@ -78,10 +78,12 @@ function decomposeLU(M) {
  * @return P a matrix such that P*M is a matrix that has an LU decomposition.
  */
 function generateP(M) {
-    var P = math.eye(M.length);  // the P matrix is initially the identity matrix
+    var P = math.eye(M.length), // the P matrix is initially the identity matrix
+        maxRow,                 // the row containing the maximum value
+        temp;
 
     for (var col = 0; col < M.length; col++) {
-        var maxRow = col;
+        maxRow = col;
 
         // search for max value
         for (var row = col; row < M.length; row++) {
@@ -92,7 +94,7 @@ function generateP(M) {
 
         // change the P matrix according to the max value's row
         if (maxRow != col) {
-            var temp = P[col];
+            temp = P[col];
             P[col] = P[maxRow];
             P[maxRow] = temp;
         }

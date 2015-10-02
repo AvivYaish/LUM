@@ -117,97 +117,9 @@ function decomposePLU(M) {
 }
 
 /**
- * Given an M matrix and a row number, compute the v row matrix for the LDLt algorithm.
- * @param M Input matrix.
- * @param row The current row.
- * @return Array The v matrix.
- */
-function computeV(M, row) {
-    var v,
-        range;  // temporary range variable used for computation
-    v = math.zeros(row + 1);
-    for (var col = 0; col < row; col++) {
-        v[col] = M[row][col] * M[col][col];
-    }
-    v[row] = M[row][row];
-    if (row > 0) {
-        range = math.range(0, row);
-        v[row] -= math.multiply(
-            math.subset(M, math.index(row, range)),
-            math.subset(v, math.index(range))
-        );
-    }
-    return v;
-}
-
-/**
- * Compute L(row+1:n, row), and return the input matrix with the updated column.
- * @param M The input matrix to be updated.
- * @param v The v matrix for the current row.
- * @param row The current row.
- * @return Array the updated M matrix.
- */
-function computeLColumn(M, v, row) {
-    var n = M.length,
-        matrixIndex,// an index used for matrix operations
-        firstRange, // a temp range used for matrix operations
-        secRange;   // another one
-
-    firstRange = math.range(row + 1, n);        // j + 1:n
-    matrixIndex = math.index(firstRange, row);  // (j+1:n, j)
-
-    // if this is the first row, no need to perform the subtraction in the algorithm
-    if (row === 0) {
-        M = math.subset(M, matrixIndex, math.divide(math.subset(M, matrixIndex), v[row]));
-    } else {
-        secRange = math.range(0, row);  // (1:j-1)
-        M = math.subset(M, matrixIndex,
-            math.divide(
-                math.subtract(
-                    math.subset(M, matrixIndex),
-                    math.multiply(
-                        math.subset(M, math.index(firstRange, secRange)),
-                        math.subset(v, math.index(secRange)))),
-                v[row]
-            )
-        );
-    }
-    return M;
-}
-
-/**
- * Based on the algorithm in p. 139 of Matrix Computations by Golub-Van Loan.
+ * Performs an LDLt decomposition, even if there are zeros on the diagonal.
  * @param M Matrix to decompose into LDLt components.
  * @return Array Result matrices.
- */
-/**
- function decomposeLDL(M) {
-    var n = M.length,
-        v,          // temporary matrix used for computation
-        logA = [],  // a log of the A matrices
-        logV = [];  // a log of the V matrices
-
-    for (var row = 0; row < n; row++) {
-        v = computeV(M, row);
-        if (v[row] === 0) {
-            return NO_DECOMP_RESULT;  // No LU factorization, can't continue!
-        }
-        M[row][row] = v[row];
-
-        // if row == n-1, nothing more to compute
-        if (row !== n - 1) {
-            M = computeLColumn(M, v, row);
-        }
-
-        // log the matrices
-        logV.push([math.clone(v)]);  // need to insert into array for printing purposes
-        logA.push(math.clone(M));
-    }
-
-    return [[["A", logA], ["V", logV]]];
-}
- */
-/**  new version, doesn't work
  */
 function decomposeLDL(M) {
     var n = M.length,
@@ -248,6 +160,12 @@ function decomposeLDL(M) {
     // also, L currently is actually Lt, so transpose it.
     L = math.transpose(math.squeeze(L));
 
-    return [[["A", logM]], ["L", L], ["D", D],
-            ["Validity check: LDLt", math.multiply(math.multiply(L, D), math.transpose(L))]];
+    // now need to zero out everything above the diagonal
+    for (var row = 0; row < n - 1; row++) {
+        for (var col = row + 1; col < n; col++) {
+            L[row][col] = 0;
+        }
+    }
+
+    return [[["A", logM]], ["L", L], ["D", D]];
 }

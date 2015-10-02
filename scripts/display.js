@@ -172,7 +172,7 @@ function generateExtrasMatricesMarkup(result) {
         markup += "<h3>" + result[matrixNum][RESULT_MATRIX_NAME]  + " matrix:</h3>" +
             generateMatrixMarkup(result[matrixNum][RESULT_MATRIX_DATA], false) + "<br>";
     }
-    return markup + "</div> <br>";
+    return markup + "</div>";
 }
 
 /**
@@ -181,7 +181,7 @@ function generateExtrasMatricesMarkup(result) {
  * @return String The markup for the result matrices.
  */
 function generateResultMatricesMarkup(result) {
-    return generateExtrasMatricesMarkup(result) + generateStepByStepMarkup(result[STEP_MATRICES_INDEX]);
+    return generateExtrasMatricesMarkup(result) + "<br>" + generateStepByStepMarkup(result[STEP_MATRICES_INDEX]);
 }
 
 /**

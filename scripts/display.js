@@ -214,7 +214,10 @@ function presentDecomposition() {
     $("#decomposition").show().scrollView();
 }
 
+/** Initialize the document. */
 $(document).ready(function () {
+    var dropZone;   // the matrix file drop zone, for drag and drop.
+
     $.fn.scrollView = scrollView;
 
     $("#choose-size").click(drawMatrixInput);
@@ -226,7 +229,7 @@ $(document).ready(function () {
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
         $("#load-from-file-div").hide();
     } else {
-        var dropZone = document.getElementById('drop-zone');
+        dropZone = document.getElementById('drop-zone');
         dropZone.addEventListener('dragover', handleDragOver, false);
         dropZone.addEventListener('drop', handleFileSelect, false);
     }

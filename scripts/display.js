@@ -29,25 +29,6 @@ function scrollView() {
     });
 }
 
-$(document).ready(function () {
-    $.fn.scrollView = scrollView;
-
-    $("#choose-size").click(drawMatrixInput);
-    $("#decompose").click(presentDecomposition);
-    $("#matrix-data-div").hide();
-    $("#decomposition").hide();
-
-    // Show the load from file div only if supported by browser
-    if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
-        $("#load-from-file-div").hide();
-    } else {
-        var dropZone = document.getElementById('drop-zone');
-        dropZone.addEventListener('dragover', handleDragOver, false);
-        dropZone.addEventListener('drop', handleFileSelect, false);
-    }
-});
-
-
 /**
  * Given the load event, format the file into a matrix based on the GNU Octave
  * specification: [col0, col1, ...; col0, col1, ...; ....]
@@ -232,3 +213,21 @@ function presentDecomposition() {
     $("#result").html(markup);
     $("#decomposition").show().scrollView();
 }
+
+$(document).ready(function () {
+    $.fn.scrollView = scrollView;
+
+    $("#choose-size").click(drawMatrixInput);
+    $("#decompose").click(presentDecomposition);
+    $("#matrix-data-div").hide();
+    $("#decomposition").hide();
+
+    // Show the load from file div only if supported by browser
+    if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+        $("#load-from-file-div").hide();
+    } else {
+        var dropZone = document.getElementById('drop-zone');
+        dropZone.addEventListener('dragover', handleDragOver, false);
+        dropZone.addEventListener('drop', handleFileSelect, false);
+    }
+});

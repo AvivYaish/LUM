@@ -83,11 +83,12 @@ function handleDragOver(event) {
  * @param M A matrix with the default values to use for the input.
  */
 function drawMatrixInput(event, M) {
+    var size;   // size of input matrix
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
         $("#matrix-size").val(M.length);
     } else {  // event listener
-        var size = parseInt($("#matrix-size").val());
+        size = parseInt($("#matrix-size").val());
         M = math.zeros(size, size);
         $("#list").html("Drop files here");
     }
@@ -148,7 +149,7 @@ function generateMatrixMarkup(M, input) {
 function generateStepByStepMarkup(matrices) {
     var markup = "<div> <h2>Step by step:</h2> <br>";
     // shows each step of the decomposition process
-    for (var step = 0; step < matrices[FIRST_RESULT_MATRIX].length; step++) {
+    for (var step = 0; step < matrices[FIRST_RESULT_MATRIX][RESULT_MATRIX_DATA].length; step++) {
         markup += "<div> <h3 class='clear'>Step " + (step + 1) + "</h3>";
         for (var matrixNum = 0; matrixNum < matrices.length; matrixNum++) {
             markup += "<div class=" + MATRIX_ALIGN[matrixNum % MAX_MATRIX_NUM] + ">" +

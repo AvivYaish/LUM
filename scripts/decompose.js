@@ -117,6 +117,22 @@ function decomposePLU(M) {
 }
 
 /**
+ * Performs the outer product (dyadic product) of vectors, as defined by Butler in p. 324.
+ * @param u Input vector.
+ * @param v Input Vector.
+ * @return {*} u x v
+ */
+function outerProduct(u ,v) {
+    var M = math.zeros(u.length, v.length);
+    for (var row = 0; row < u.length; row++) {
+        for (var col = 0; col < v.length; col++) {
+            M[row][col] = u[row] * v[col];
+        }
+    }
+    return M;
+}
+
+/**
  * Performs an LDLt decomposition, even if there are zeros on the diagonal.
  * @param M Matrix to decompose into LDLt components.
  * @return Array Result matrices.
@@ -136,14 +152,13 @@ function decomposeLDL(M) {
         // insert to curColIndex the math.js representation for the indices of the current column
         curColIndex = math.index(math.range(0, n), row);
 
-        if (D[row][row] + 1 > 1) {
+        if (D[row][row] + 1 !== 1) {
             // using curColIndex, the function math.subset will get the current column values from the matrix M
             curColValues = math.subset(M, curColIndex);
 
             // add a new column to L and update M
             L.push(math.divide(curColValues, D[row][row]));
-            M = math.subset(M, curColIndex, math.subtract(math.subset(M, curColIndex),
-                                                          math.dotMultiply(L[row], curColValues)));
+            M = math.subtract(M, outerProduct(math.squeeze(L[row]), math.squeeze(curColValues)));
         } else {
             // add a new column to L
             L.push(math.zeros(n, 1));

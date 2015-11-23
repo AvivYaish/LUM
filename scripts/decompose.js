@@ -11,7 +11,7 @@ math.config({matrix: 'array'});
  *  [extrasMatrix1 name, extrasMatrix1 data],
  *  [extrasMatrix2 name, extrasMatrix2 data],
  *  ...
- * ]x
+ * ]
  */
 
 /** The first result matrix in the results. */
@@ -38,6 +38,7 @@ function decomposeRREF(M) {
     var lead = 0,
         height = M.length,
         width = M[0].length;
+
     for (var row = 0; row < height; row++) {
         if (width <= lead) {
             return;
@@ -72,7 +73,7 @@ function decomposeRREF(M) {
         }
         lead++;
     }
-    return M;
+    return [[["RREF of M", M]]];;
 }
 
 /**

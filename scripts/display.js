@@ -215,6 +215,18 @@ function presentDecomposition() {
     $("#decomposition").show().scrollView();
 }
 
+/**
+ * @param M The matrix to turn to string.
+ * @return String a string representation of the matrix.
+ */
+function matrixToString(M) {
+    var string = [];
+    for (var row = 0; row < M.length; row++) {
+        string.push(M[row].join(","));
+    }
+    return string.join("\n");
+}
+
 /** Initialize the document. */
 $(document).ready(function () {
     var dropZone;   // the matrix file drop zone, for drag and drop.

@@ -11,7 +11,7 @@ math.config({matrix: 'array'});
  *  [extrasMatrix1 name, extrasMatrix1 data],
  *  [extrasMatrix2 name, extrasMatrix2 data],
  *  ...
- * ]
+ * ]x
  */
 
 /** The first result matrix in the results. */
@@ -28,6 +28,52 @@ var RESULT_MATRIX_NAME = 0;
 
 /** The data of a matrix in the results. */
 var RESULT_MATRIX_DATA = 1;
+
+
+/**
+ * @param M The matrix to produce an RREF for.
+ * @return Array M in RREF.
+ */
+function decomposeRREF(M) {
+    var lead = 0,
+        height = M.length,
+        width = M[0].length;
+    for (var row = 0; row < height; row++) {
+        if (width <= lead) {
+            return;
+        }
+        var i = row;
+        while (M[i][lead] == 0) {
+            i++;
+            if (height == i) {
+                i = row;
+                lead++;
+                if (width == lead) {
+                    return;
+                }
+            }
+        }
+
+        var tmp = M[i];
+        M[i] = M[row];
+        M[row] = tmp;
+
+        var val = M[row][lead];
+        for (var j = 0; j < width; j++) {
+            M[row][j] /= val;
+        }
+
+        for (var i = 0; i < height; i++) {
+            if (i == row) continue;
+            val = M[i][lead];
+            for (var j = 0; j < width; j++) {
+                M[i][j] -= val * M[row][j];
+            }
+        }
+        lead++;
+    }
+    return M;
+}
 
 /**
  * @param M Matrix to decompose into LU components.
@@ -182,5 +228,5 @@ function decomposeLDL(M) {
         }
     }
 
-    return [[["A", logM]], ["L", L], ["D", D]];
+    return [[["A", logM]], ["sanity", math.multiply(L, math.multiply(D, math.transpose(L)))], ["L", L], ["D", D]];
 }

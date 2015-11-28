@@ -39,23 +39,27 @@ function decomposeRREF(M) {
         height = M.length,
         width = M[0].length,
         i,
-        j;
+        j,
+        stop;  // whether or not to stop the main loop
 
-    window.alert(matrixToString(M));
+    stop = false;
     for (var row = 0; row < height; row++) {
         if (width <= lead) {
             return;
         }
         i = row;
-        while (M[i][lead] == 0) {
+        while ((M[i][lead] == 0) && (!stop)) {
             i++;
             if (height == i) {
                 i = row;
                 lead++;
                 if (width == lead) {
-                    return [[["RREF of M", M]]];
+                    stop = true;
                 }
             }
+        }
+        if (stop) {
+            break;
         }
 
         var tmp = M[i];
@@ -76,10 +80,9 @@ function decomposeRREF(M) {
                 M[i][j] -= val * M[row][j];
             }
         }
-        window.alert(matrixToString(M));
         lead++;
     }
-    window.alert(matrixToString(M));
+
     return [[["RREF of M", M]]];
 }
 

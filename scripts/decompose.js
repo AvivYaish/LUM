@@ -31,6 +31,16 @@ var RESULT_MATRIX_DATA = 1;
 
 
 /**
+ * @returns {*} M with its i and j rows switched.
+ */
+function switchRows(M, i, j) {
+    var tmp = M[i];
+    M[i] = M[j];
+    M[j] = tmp;
+    return M;
+}
+
+/**
  * @param M The matrix to produce an RREF for.
  * @return Array M in RREF.
  */
@@ -40,9 +50,9 @@ function decomposeRREF(M) {
         width = M[0].length,
         i,
         j,
-        stop;  // whether or not to stop the main loop
+        stop = false,   // whether or not to stop the main loop
+        val;            // will be used for row elimination
 
-    stop = false;
     for (var row = 0; row < height; row++) {
         if (width <= lead) {
             return;
@@ -62,11 +72,9 @@ function decomposeRREF(M) {
             break;
         }
 
-        var tmp = M[i];
-        M[i] = M[row];
-        M[row] = tmp;
+        M = switchRows(M, i, row);
 
-        var val = M[row][lead];
+        val = M[row][lead];
         // normalize the row
         for (j = 0; j < width; j++) {
             M[row][j] /= val;
@@ -74,7 +82,9 @@ function decomposeRREF(M) {
 
         // zero out the column
         for (i = 0; i < height; i++) {
-            if (i == row) continue;
+            if (i == row) {
+                continue;
+            }
             val = M[i][lead];
             for (j = 0; j < width; j++) {
                 M[i][j] -= val * M[row][j];
@@ -86,36 +96,45 @@ function decomposeRREF(M) {
     return [[["RREF of M", M]]];
 }
 
+/**
+ * @returns {*} The nullspace of matrix M.
+ */
 function findNullspace(M) {
     M = math.transpose(M);
     var lead = 0,
         height = M.length,
         width = M[0].length,
         i,
-        j;
-    var I = math.eye(height);
+        j,
+        stop = false,           // whether or not to stop the main loop
+        I = math.eye(height),   // the matrix that will contain the nullspace base
+        val,                    // will be used for row elimination
+        nullspace = [];
+
 
     for (var row = 0; row < height; row++) {
         if (width <= lead) {
             return;
         }
         i = row;
-        while (M[i][lead] == 0) {
+        while ((M[i][lead] == 0) && (!stop)) {
             i++;
             if (height == i) {
                 i = row;
                 lead++;
                 if (width == lead) {
-                    return;
+                    stop = true;
                 }
             }
         }
+        if (stop) {
+            break;
+        }
 
-        var tmp = M[i];
-        M[i] = M[row];
-        M[row] = tmp;
+        M = switchRows(M, i, row);
+        I = switchRows(I, i, row);
 
-        var val = M[row][lead];
+        val = M[row][lead];
         // normalize the row
         for (j = 0; j < width; j++) {
             M[row][j] /= val;
@@ -123,19 +142,25 @@ function findNullspace(M) {
 
         // zero out the column
         for (i = 0; i < height; i++) {
-            if (i == row) continue;
+            if (i == row) {
+                continue;
+            }
             val = M[i][lead];
             for (j = 0; j < width; j++) {
                 M[i][j] -= val * M[row][j];
-                I[i][row] -= val;
-                window.alert(matrixToString(I));
+                I[i][j] -= val * I[row][j];
             }
         }
         lead++;
     }
 
-
-    return I;
+    // advance until we arrive to the columns which are a combination of the previous ones
+    for (i = 0; (i < height) && (i < width) && (M[i][i] == 1); i++) {}
+    // take only the corresponding columns from I
+    for (; i < height; i++) {
+        nullspace.push(I[i]);
+    }
+    return [[["Nullspace of M", math.transpose(nullspace)]]];
 }
 
 /**
@@ -191,7 +216,7 @@ function generateP(M) {
         maxRow,                 // the row containing the maximum value
         temp;
 
-    for (var col = 0; col < M.length; col++) {
+    for (var col = 0; col < M[0].length; col++) {
         maxRow = col;
 
         // search for max value

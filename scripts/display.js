@@ -222,7 +222,7 @@ function presentDecomposition() {
 function matrixToString(M) {
     var string = [];
     for (var row = 0; row < M.length; row++) {
-        string.push(M[row].join(","));
+        string.push(M[row].join(",\t"));
     }
     return string.join("\n");
 }
@@ -246,4 +246,7 @@ $(document).ready(function () {
         dropZone.addEventListener('dragover', handleDragOver, false);
         dropZone.addEventListener('drop', handleFileSelect, false);
     }
+
+    A = [[1,0,-3,0,2,-8], [0,1,5,0,-1,4], [0,0,0,1,7,-9], [0,0,0,0,0,0]];
+    window.alert(matrixToString(findNullspace(A)));
 });

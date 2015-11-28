@@ -37,13 +37,66 @@ var RESULT_MATRIX_DATA = 1;
 function decomposeRREF(M) {
     var lead = 0,
         height = M.length,
-        width = M[0].length;
+        width = M[0].length,
+        i,
+        j;
+
+    window.alert(matrixToString(M));
+    for (var row = 0; row < height; row++) {
+        if (width <= lead) {
+            return;
+        }
+        i = row;
+        while (M[i][lead] == 0) {
+            i++;
+            if (height == i) {
+                i = row;
+                lead++;
+                if (width == lead) {
+                    return [[["RREF of M", M]]];
+                }
+            }
+        }
+
+        var tmp = M[i];
+        M[i] = M[row];
+        M[row] = tmp;
+
+        var val = M[row][lead];
+        // normalize the row
+        for (j = 0; j < width; j++) {
+            M[row][j] /= val;
+        }
+
+        // zero out the column
+        for (i = 0; i < height; i++) {
+            if (i == row) continue;
+            val = M[i][lead];
+            for (j = 0; j < width; j++) {
+                M[i][j] -= val * M[row][j];
+            }
+        }
+        window.alert(matrixToString(M));
+        lead++;
+    }
+    window.alert(matrixToString(M));
+    return [[["RREF of M", M]]];
+}
+
+function findNullspace(M) {
+    M = math.transpose(M);
+    var lead = 0,
+        height = M.length,
+        width = M[0].length,
+        i,
+        j;
+    var I = math.eye(height);
 
     for (var row = 0; row < height; row++) {
         if (width <= lead) {
             return;
         }
-        var i = row;
+        i = row;
         while (M[i][lead] == 0) {
             i++;
             if (height == i) {
@@ -60,20 +113,26 @@ function decomposeRREF(M) {
         M[row] = tmp;
 
         var val = M[row][lead];
-        for (var j = 0; j < width; j++) {
+        // normalize the row
+        for (j = 0; j < width; j++) {
             M[row][j] /= val;
         }
 
-        for (var i = 0; i < height; i++) {
+        // zero out the column
+        for (i = 0; i < height; i++) {
             if (i == row) continue;
             val = M[i][lead];
-            for (var j = 0; j < width; j++) {
+            for (j = 0; j < width; j++) {
                 M[i][j] -= val * M[row][j];
+                I[i][row] -= val;
+                window.alert(matrixToString(I));
             }
         }
         lead++;
     }
-    return [[["RREF of M", M]]];;
+
+
+    return I;
 }
 
 /**

@@ -46,6 +46,7 @@ function switchRows(M, i, j) {
  */
 function findRREF(M) {
     var curColumn = 0,
+        curRow,
         height = M.length,
         width = M[0].length,
         i,
@@ -53,17 +54,17 @@ function findRREF(M) {
         stop = false,   // whether or not to stop the main loop
         val;            // will be used for row elimination
 
-    for (var row = 0; row < height; row++) {
+    for (curRow = 0; curRow < height; curRow++) {
         if (width <= curColumn) {
             break;
         }
 
         // find first row which has a non zero value on the current column
-        i = row;
+        i = curRow;
         while ((M[i][curColumn] == 0) && (!stop)) {
             i++;
             if (height == i) {
-                i = row;
+                i = curRow;
                 curColumn++;
                 if (width == curColumn) {
                     stop = true;
@@ -75,22 +76,22 @@ function findRREF(M) {
         }
 
         // switch rows if needed
-        M = switchRows(M, i, row);
+        M = switchRows(M, i, curRow);
 
-        val = M[row][curColumn];
+        val = M[curRow][curColumn];
         // normalize the row
         for (j = 0; j < width; j++) {
-            M[row][j] /= val;
+            M[curRow][j] /= val;
         }
 
         // zero out the column
         for (i = 0; i < height; i++) {
-            if (i == row) {
+            if (i == curRow) {
                 continue;
             }
             val = M[i][curColumn];
             for (j = 0; j < width; j++) {
-                M[i][j] -= val * M[row][j];
+                M[i][j] -= val * M[curRow][j];
             }
         }
         curColumn++;
@@ -108,6 +109,7 @@ function findNullspace(M) {
     // and use the RREF algorithm.
     M = math.transpose(M);
     var curColumn = 0,
+        curRow,
         height = M.length,
         width = M[0].length,
         i,
@@ -118,17 +120,17 @@ function findNullspace(M) {
         nullspace = [];
 
 
-    for (var row = 0; row < height; row++) {
+    for (curRow = 0; curRow < height; curRow++) {
         if (width <= curColumn) {
             break;
         }
 
         // find first row which has a non zero value on the current column
-        i = row;
+        i = curRow;
         while ((M[i][curColumn] == 0) && (!stop)) {
             i++;
             if (height == i) {
-                i = row;
+                i = curRow;
                 curColumn++;
                 if (width == curColumn) {
                     stop = true;
@@ -140,24 +142,24 @@ function findNullspace(M) {
         }
 
         // switch rows if needed
-        M = switchRows(M, i, row);
-        I = switchRows(I, i, row);
+        M = switchRows(M, i, curRow);
+        I = switchRows(I, i, curRow);
 
-        val = M[row][curColumn];
+        val = M[curRow][curColumn];
         // normalize the row
         for (j = 0; j < width; j++) {
-            M[row][j] /= val;
+            M[curRow][j] /= val;
         }
 
         // zero out the column
         for (i = 0; i < height; i++) {
-            if (i == row) {
+            if (i == curRow) {
                 continue;
             }
             val = M[i][curColumn];
             for (j = 0; j < width; j++) {
-                M[i][j] -= val * M[row][j];
-                I[i][j] -= val * I[row][j];
+                M[i][j] -= val * M[curRow][j];
+                I[i][j] -= val * I[curRow][j];
             }
         }
         curColumn++;

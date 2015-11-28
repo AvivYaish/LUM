@@ -45,7 +45,7 @@ function switchRows(M, i, j) {
  * @return Array M in RREF.
  */
 function findRREF(M) {
-    var lead = 0,
+    var curColumn = 0,
         height = M.length,
         width = M[0].length,
         i,
@@ -54,16 +54,18 @@ function findRREF(M) {
         val;            // will be used for row elimination
 
     for (var row = 0; row < height; row++) {
-        if (width <= lead) {
-            return;
+        if (width <= curColumn) {
+            break;
         }
+
+        // find first row which has a non zero value on the current column
         i = row;
-        while ((M[i][lead] == 0) && (!stop)) {
+        while ((M[i][curColumn] == 0) && (!stop)) {
             i++;
             if (height == i) {
                 i = row;
-                lead++;
-                if (width == lead) {
+                curColumn++;
+                if (width == curColumn) {
                     stop = true;
                 }
             }
@@ -72,9 +74,10 @@ function findRREF(M) {
             break;
         }
 
+        // switch rows if needed
         M = switchRows(M, i, row);
 
-        val = M[row][lead];
+        val = M[row][curColumn];
         // normalize the row
         for (j = 0; j < width; j++) {
             M[row][j] /= val;
@@ -85,12 +88,12 @@ function findRREF(M) {
             if (i == row) {
                 continue;
             }
-            val = M[i][lead];
+            val = M[i][curColumn];
             for (j = 0; j < width; j++) {
                 M[i][j] -= val * M[row][j];
             }
         }
-        lead++;
+        curColumn++;
     }
 
     return [[], ["RREF of", M]];
@@ -100,8 +103,11 @@ function findRREF(M) {
  * @returns {*} The nullspace of matrix M.
  */
 function findNullspace(M) {
+    // finds the nullspace by computing the column echelon form by
+    // Gaussian elimination, so need to transpose the input matrix
+    // and use the RREF algorithm.
     M = math.transpose(M);
-    var lead = 0,
+    var curColumn = 0,
         height = M.length,
         width = M[0].length,
         i,
@@ -113,16 +119,18 @@ function findNullspace(M) {
 
 
     for (var row = 0; row < height; row++) {
-        if (width <= lead) {
-            return;
+        if (width <= curColumn) {
+            break;
         }
+
+        // find first row which has a non zero value on the current column
         i = row;
-        while ((M[i][lead] == 0) && (!stop)) {
+        while ((M[i][curColumn] == 0) && (!stop)) {
             i++;
             if (height == i) {
                 i = row;
-                lead++;
-                if (width == lead) {
+                curColumn++;
+                if (width == curColumn) {
                     stop = true;
                 }
             }
@@ -131,10 +139,11 @@ function findNullspace(M) {
             break;
         }
 
+        // switch rows if needed
         M = switchRows(M, i, row);
         I = switchRows(I, i, row);
 
-        val = M[row][lead];
+        val = M[row][curColumn];
         // normalize the row
         for (j = 0; j < width; j++) {
             M[row][j] /= val;
@@ -145,13 +154,13 @@ function findNullspace(M) {
             if (i == row) {
                 continue;
             }
-            val = M[i][lead];
+            val = M[i][curColumn];
             for (j = 0; j < width; j++) {
                 M[i][j] -= val * M[row][j];
                 I[i][j] -= val * I[row][j];
             }
         }
-        lead++;
+        curColumn++;
     }
 
     // advance until we arrive to the columns which are a combination of the previous ones

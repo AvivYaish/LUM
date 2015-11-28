@@ -93,7 +93,7 @@ function findRREF(M) {
         lead++;
     }
 
-    return [[], ["RREF of M", M]];
+    return [[], ["RREF of", M]];
 }
 
 /**
@@ -160,7 +160,7 @@ function findNullspace(M) {
     for (; i < height; i++) {
         nullspace.push(I[i]);
     }
-    return [[], ["Nullspace of M", math.transpose(nullspace)]];
+    return [[], ["Nullspace of", math.transpose(nullspace)]];
 }
 
 /**

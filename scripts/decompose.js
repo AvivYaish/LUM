@@ -78,8 +78,8 @@ function findRREF(M) {
         // switch rows if needed
         M = switchRows(M, i, curRow);
 
-        val = M[curRow][curColumn];
         // normalize the row
+        val = M[curRow][curColumn];
         for (j = 0; j < width; j++) {
             M[curRow][j] /= val;
         }
@@ -145,8 +145,8 @@ function findNullspace(M) {
         M = switchRows(M, i, curRow);
         I = switchRows(I, i, curRow);
 
-        val = M[curRow][curColumn];
         // normalize the row
+        val = M[curRow][curColumn];
         for (j = 0; j < width; j++) {
             M[curRow][j] /= val;
         }

@@ -16,7 +16,6 @@
 <div id="matrix-config" align="center" style="display: block;">
     <form id="input-form" style="display: block;">
         <h1>M=LU</h1>
-        <label for="matrix-size">Matrix size:</label> <input id="matrix-size" type="text" value="0">
         Rows:</label> <input id="row-num" type="text" value="0">
         Columns:</label> <input id="col-num" type="text" value="0">
         <input id="choose-size" type="button" value="Choose size"><br><br>
@@ -38,6 +37,8 @@
             <option value="LU">LU</option>
             <option value="PLU">PLU</option>
             <option value="LDLt">LDLt</option>
+            <option value="RREF">RREF</option>
+            <option value="Nullspace">Nullspace</option>
         </select>
         <input id="decompose" type="button" value="Decompose"><br><br>
     </form>

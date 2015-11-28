@@ -83,13 +83,15 @@ function handleDragOver(event) {
  * @param M A matrix with the default values to use for the input.
  */
 function drawMatrixInput(event, M) {
-    var size;   // size of input matrix
+    var rowNum, colNum;   // size of input matrix
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
-        $("#matrix-size").val(M.length);
+        $("#row-num").val(M.length);
+        $("#col-num").val(M[0].length);
     } else {  // event listener
-        size = parseInt($("#matrix-size").val());
-        M = math.zeros(size, size);
+        rowNum = parseInt($("#row-num").val());
+        colNum = parseInt($("#col-num").val());
+        M = math.zeros(rowNum, colNum);
         $("#list").html("Drop files here");
     }
 
@@ -102,10 +104,11 @@ function drawMatrixInput(event, M) {
  * @return {*} input matrix
  */
 function readInputMatrix() {
-    var size = parseInt($("#matrix-size").val()),
-        M = math.zeros(size, size);
-    for (var row = 0; row < size; row++) {
-        for (var col = 0; col < size; col++) {
+    var rowNum = parseInt($("#row-num").val()),
+        colNum = parseInt($("#col-num").val()),
+        M = math.zeros(rowNum, colNum);
+    for (var row = 0; row < rowNum; row++) {
+        for (var col = 0; col < colNum; col++) {
             M[row][col] = parseInt($("#" + row + "-" + col + "").val());
         }
     }
@@ -182,7 +185,11 @@ function generateExtrasMatricesMarkup(result) {
  * @return String The markup for the result matrices.
  */
 function generateResultMatricesMarkup(result) {
-    return generateExtrasMatricesMarkup(result) + "<br>" + generateStepByStepMarkup(result[STEP_MATRICES_INDEX]);
+    var markup = generateExtrasMatricesMarkup(result);
+    if (result[STEP_MATRICES_INDEX].length > 0) {
+        markup += "<br>" + generateStepByStepMarkup(result[STEP_MATRICES_INDEX]);
+    }
+    return  markup;
 }
 
 /**
@@ -202,6 +209,12 @@ function presentDecomposition() {
             break;
         case "LDLt":
             result = decomposeLDL(M);
+            break;
+        case "RREF":
+            result = findRREF(M);
+            break;
+        case "Nullspace":
+            result = findNullspace(M);
             break;
     }
 

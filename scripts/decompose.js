@@ -44,7 +44,7 @@ function switchRows(M, i, j) {
  * @param M The matrix to produce an RREF for.
  * @return Array M in RREF.
  */
-function decomposeRREF(M) {
+function findRREF(M) {
     var lead = 0,
         height = M.length,
         width = M[0].length,
@@ -93,7 +93,7 @@ function decomposeRREF(M) {
         lead++;
     }
 
-    return [[["RREF of M", M]]];
+    return [[], ["RREF of M", M]];
 }
 
 /**
@@ -160,7 +160,7 @@ function findNullspace(M) {
     for (; i < height; i++) {
         nullspace.push(I[i]);
     }
-    return [[["Nullspace of M", math.transpose(nullspace)]]];
+    return [[], ["Nullspace of M", math.transpose(nullspace)]];
 }
 
 /**

@@ -175,6 +175,31 @@ function findNullspace(M) {
 }
 
 /**
+ * @returns {*[]} The projection of v on the basis.
+ */
+function projectVec(v, basis) {
+    var projection = [],    // will hold the projection of v on the basis
+        unitVec,            // the unit vector of the current vector in basis
+        norm;               // the norm of the current vector in basis
+
+    for (var i = 0; i < basis.length; i++) {
+        // calculate the norm
+        norm = 0;
+        for (var j = 0; j < basis[i].length; j++) {
+            norm += Math.pow(basis[i][j], 2);
+        }
+        norm = sqrt(norm);
+
+        unitVec = math.divide(basis[i], norm);
+
+        projection.push(math.multiply(math.multiply(v, unitVec),
+                        unitVec));
+    }
+
+    return [[], projection];
+}
+
+/**
  * @param M Matrix to decompose into LU components.
  * @return Array Result matrices.
  */

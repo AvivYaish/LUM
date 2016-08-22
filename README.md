@@ -19,4 +19,7 @@ math.js - awesome library, very useful matrix functions
 
 TodoMVC - used some CSS
 
-João Sardinha - used some of his table CSS
+Joï¿½o Sardinha - used some of his table CSS
+
+<iframe src="https://player.vimeo.com/video/179744631" width="640" height="349" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<p><a href="https://vimeo.com/179744631">LUM</a> from <a href="https://vimeo.com/user50492336">Khet AI</a> on <a href="https://vimeo.com">Vimeo</a>.</p>

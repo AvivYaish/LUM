@@ -1,6 +1,6 @@
 # LUM
 
-![Demonstration video](/relative/path/to/img.jpg?raw=true "Demonstration video")
+![Demonstration video](/demo.gif?raw=true "Demonstration video")
 
 Choose a matrix size, then input it's data. Choose a decomposition type and press "Decompose" to
 perform it.

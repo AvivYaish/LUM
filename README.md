@@ -2,8 +2,8 @@
 
 ![Demonstration video](/demo.gif?raw=true "Demonstration video")
 
-Choose a matrix size, then input it's data. Choose a decomposition type and press "Decompose" to
-perform it.
+Choose a matrix size, then input it's data, or drag and drop a file containing the matrix data in the GNU Octave format.
+Choose a decomposition type and press "Decompose" to perform it.
 
 LU decomposes the given matrix M into a pair L,U such that M = LU, when L is lower triangular and U
 is upper triangular.

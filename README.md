@@ -3,7 +3,10 @@
 ![Demonstration video](/demo.gif?raw=true "Demonstration video")
 
 Choose a matrix size, then input it's data, or drag and drop a file containing the matrix data in the GNU Octave format.
-Choose a decomposition type and press "Decompose" to perform it.
+Choose an action and press "Decompose" to perform the required action.
+
+# Decomposition types
+These actions are performed step by step according to various text-book algorithms.
 
 LU decomposes the given matrix M into a pair L,U such that M = LU, when L is lower triangular and U
 is upper triangular.
@@ -14,6 +17,10 @@ LDLt decomposes the given matrix based on the algorithm in p. 139 of Matrix Comp
 Golub-Van Loan such that the result contains the L matrix below the diagonal, and the D matrix
 on the diagonal itself.
 
+# Other actions
+RREF and Nullspace modes simply show the required output, without the steps
+
+# Thanks
 Special thanks to:
 
 jQuery

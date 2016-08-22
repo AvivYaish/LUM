@@ -3,7 +3,7 @@
 ![Demonstration video](/demo.gif?raw=true "Demonstration video")
 
 Choose a matrix size, then input it's data, or drag and drop a file containing the matrix data in the GNU Octave format.
-Choose an action and press "Decompose" to perform the required action.
+Choose an action and press "Decompose" to perform the requested action.
 
 # Decomposition types
 These actions are performed step by step according to various text-book algorithms.
@@ -18,7 +18,7 @@ Golub-Van Loan such that the result contains the L matrix below the diagonal, an
 on the diagonal itself.
 
 # Other actions
-RREF and Nullspace modes simply show the required output, without the steps
+RREF and Nullspace modes simply show the requested output, without the steps.
 
 # Thanks
 Special thanks to:

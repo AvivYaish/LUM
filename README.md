@@ -16,6 +16,8 @@ PLU allows using a P row pivot matrix to move rows in M to ensure it has an LU d
 LDLt decomposes the given matrix based on the algorithm in p. 139 of Matrix Computations by
 Golub-Van Loan such that the result contains the L matrix below the diagonal, and the D matrix
 on the diagonal itself.
+Also supported is LDLt for sparse matrices, although when used through the GUI the matrix has
+to be supplied in a dense format.
 
 # Other actions
 RREF and Nullspace modes simply show the requested output, without the steps.

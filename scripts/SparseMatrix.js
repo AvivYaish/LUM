@@ -51,7 +51,7 @@ SparseMatrix.fromDense = function (denseM) {
 
         // counts the upper trailing zeros of the column
         for (trailingZerosNum = 0;
-             (trailingZerosNum < col -1) && (denseM[trailingZerosNum][col] == 0);
+             (trailingZerosNum < col -1) && (denseM[trailingZerosNum][col] === 0);
              trailingZerosNum++) {}
 
         // insert the current column

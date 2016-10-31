@@ -38,7 +38,8 @@ SparseMatrix.fromDense = function (denseM) {
     var data,
         diagonalIndices,
         row,
-        col;
+        col,
+        trailingZerosNum;
 
     data = [];
     diagonalIndices = new Array(denseM.length);
@@ -48,8 +49,13 @@ SparseMatrix.fromDense = function (denseM) {
         diagonalIndices[col] = data.length;
         data.push(denseM[col][col]);
 
+        // counts the upper trailing zeros of the column
+        for (trailingZerosNum = 0;
+             (trailingZerosNum < col -1) && (denseM[trailingZerosNum][col] == 0);
+             trailingZerosNum++) {}
+
         // insert the current column
-        for (row = col - 1; row >= 0; row--) {
+        for (row = col - 1; row >= trailingZerosNum; row--) {
             data.push(denseM[row][col]);
         }
     }
@@ -192,3 +198,10 @@ SparseMatrix.prototype.toString = function() {
 
     return str;
 };
+console.log(SparseMatrix.fromDense(
+    [[2, -2, 0, 0, -1],
+        [-2, 3, -2, 0, 0],
+        [0, -2, 5, -3, 0],
+        [0, 0, -3, 10, 4],
+        [-1, 0, 0, 4, 10]]
+).LDLt().toString());

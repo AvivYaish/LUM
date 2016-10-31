@@ -210,6 +210,9 @@ function presentDecomposition() {
         case "LDLt":
             result = decomposeLDL(M);
             break;
+        case "Sparse LDLt":
+            result = [[], ["LDLt of M", SparseMatrix.fromDense(M).LDLt().toDense()]];
+            break;
         case "RREF":
             result = findRREF(M);
             break;

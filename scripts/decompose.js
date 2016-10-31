@@ -313,10 +313,11 @@ function decomposeLDL(M) {
         D = math.eye(n),
         curColIndex,    // the indices for the current column
         curColValues,   // the values of the current column
-        logM = [];      // a log of the A matrices
+        logM = [],      // a log of the A matrices
+        row;
 
     // note that L starts empty, and in each iteration we add a single column to it.
-    for (var row = 0; row < n; row++) {
+    for (row = 0; row < n; row++) {
         D[row][row] = M[row][row];
 
         // insert to curColIndex the math.js representation for the indices of the current column
@@ -346,7 +347,7 @@ function decomposeLDL(M) {
     L = math.transpose(math.squeeze(L));
 
     // now need to zero out everything above the diagonal
-    for (var row = 0; row < n - 1; row++) {
+    for (row = 0; row < n - 1; row++) {
         for (var col = row + 1; col < n; col++) {
             L[row][col] = 0;
         }

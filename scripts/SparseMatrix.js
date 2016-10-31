@@ -198,10 +198,3 @@ SparseMatrix.prototype.toString = function() {
 
     return str;
 };
-console.log(SparseMatrix.fromDense(
-    [[2, -2, 0, 0, -1],
-        [-2, 3, -2, 0, 0],
-        [0, -2, 5, -3, 0],
-        [0, 0, -3, 10, 4],
-        [-1, 0, 0, 4, 10]]
-).LDLt().toString());

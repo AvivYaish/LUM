@@ -29,6 +29,35 @@ function SparseMatrix(data, diagonalIndices) {
 }
 
 /**
+ * Given a symmetrical dense matrix, returns a sparse
+ * matrix representation of it.
+ * @param denseM - the dense matrix to convert to sparse.
+ * @constructor
+ */
+SparseMatrix.fromDense = function (denseM) {
+    var data,
+        diagonalIndices,
+        row,
+        col;
+
+    data = [];
+    diagonalIndices = new Array(denseM.length);
+
+    for (col = 0; col < denseM.length; col++) {
+        // insert the current diagonal value
+        diagonalIndices[col] = data.length;
+        data.push(denseM[col][col]);
+
+        // insert the current column
+        for (row = col - 1; row >= 0; row--) {
+            data.push(denseM[row][col]);
+        }
+    }
+
+    return new SparseMatrix(data, diagonalIndices);
+};
+
+/**
  * @returns {Array} - a dense matrix representation of
  *                    this symmetrical sparse matrix.
  */
@@ -88,7 +117,8 @@ SparseMatrix.prototype.LDLt = function() {
             // updating the g values
             curGIndex = this._getIndex(row, col);
             for (r = Math.max(this._m[col], this._m[row]); r < row; r++) {
-                this._data[curGIndex] -= this._data[this._getIndex(r, row)] * this._data[this._getIndex(r, col)];
+                this._data[curGIndex] -=
+                    this._data[this._getIndex(r, row)] * this._data[this._getIndex(r, col)];
             }
         }
 

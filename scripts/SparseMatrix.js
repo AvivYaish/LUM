@@ -23,7 +23,7 @@ function SparseMatrix(data, diagonalIndices) {
     // _n holds the column/row number of the matrix.
     this._n = diagonalIndices.length;
 
-    // _m hols the skyline of the matrix, called according
+    // _m holds the skyline of the matrix, called "m" according
     // to the convention in p.3 of Week_10_LDL_maria100107
     this._m = this._getSkyline();
 }
@@ -123,20 +123,19 @@ SparseMatrix.prototype.LDLt = function() {
             // updating the g values
             curGIndex = this._getIndex(row, col);
             for (r = Math.max(this._m[col], this._m[row]); r < row; r++) {
-                this._data[curGIndex] -=
-                    this._data[this._getIndex(r, row)] * this._data[this._getIndex(r, col)];
+                this._data[curGIndex] -= this.getElem(r, row) * this.getElem(r, col);
             }
         }
 
         // replacing the g values with L values
         for (row = this._m[col]; row < col; row++) {
-            this._data[this._getIndex(row, col)] /= this._data[this._diagonalIndices[row]];
+            this._data[this._getIndex(row, col)] /= this.getElem(row, row);
         }
 
         // updating D
         for (r = this._m[col]; r < col; r++) {
             this._data[this._diagonalIndices[col]] -=
-                Math.pow(this._data[ this._getIndex(r, col)], 2) * this._data[this._diagonalIndices[r]];
+                Math.pow(this.getElem(r, col), 2) * this.getElem(r, r);
         }
     }
 
@@ -193,6 +192,7 @@ SparseMatrix.prototype.toString = function() {
         for (col = 0; col < this._n; col++) {
             str += this.getElem(row, col).toString() + "\t";
         }
+
         str += "\n";
     }
 

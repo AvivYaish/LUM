@@ -198,4 +198,3 @@ SparseMatrix.prototype.toString = function() {
 
     return str;
 };
-

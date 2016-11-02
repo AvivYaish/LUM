@@ -44,7 +44,7 @@ function loadFile(event) {
         matrix[row] = matrix[row].split(COL_DELIM);
     }
 
-    drawMatrixInput(undefined, matrix)
+    drawDenseMatrixInput(undefined, matrix);
 }
 
 /**
@@ -82,7 +82,29 @@ function handleDragOver(event) {
  * @param event Received if this is called by the event listener.
  * @param M A matrix with the default values to use for the input.
  */
-function drawMatrixInput(event, M) {
+function drawDenseMatrixInput(event, M) {
+    var rowNum, colNum;   // size of input matrix
+    // Determine if the function was called by an event listener or by loadFile
+    if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
+        $("#row-num").val(M.length);
+        $("#col-num").val(M[0].length);
+    } else {  // event listener
+        rowNum = parseInt($("#row-num").val());
+        colNum = parseInt($("#col-num").val());
+        M = math.zeros(rowNum, colNum);
+        $("#list").html("Drop files here");
+    }
+
+    $("#matrix-data").html(generateMatrixMarkup(M, true));
+    $("#matrix-data-div").show();
+}
+
+/**
+ * Draws the input table for the input sparse matrix.
+ * @param event Received if this is called by the event listener.
+ * @param data Data for the sparse matrix.
+ */
+function drawSparseMatrixInput(event, M) {
     var rowNum, colNum;   // size of input matrix
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
@@ -249,7 +271,7 @@ $(document).ready(function () {
 
     $.fn.scrollView = scrollView;
 
-    $("#choose-size").click(drawMatrixInput);
+    $("#choose-size").click(drawDenseMatrixInput);
     $("#decompose").click(presentDecomposition);
     $("#matrix-data-div").hide();
     $("#decomposition").hide();
@@ -258,7 +280,7 @@ $(document).ready(function () {
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
         $("#load-from-file-div").hide();
     } else {
-        dropZone = document.getElementById('drop-zone');
+        dropZone = document.getElementById('whole-page');
         dropZone.addEventListener('dragover', handleDragOver, false);
         dropZone.addEventListener('drop', handleFileSelect, false);
     }

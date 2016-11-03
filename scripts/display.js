@@ -1,3 +1,8 @@
+/***
+ * display.js
+ * Contains all the dynamic display functionality.
+ */
+
 /** Specifies the number of digits to show after the dot. Does not affect
  * computation precision. */
 var DIGITS_AFTER_DOT = 3;
@@ -78,7 +83,7 @@ function handleDragOver(event) {
 }
 
 /**
- * Draws the input table for the input matrix.
+ * Draws the input table for the input dense matrix.
  * @param event Received if this is called by the event listener.
  * @param M A matrix with the default values to use for the input.
  */
@@ -104,28 +109,26 @@ function drawDenseMatrixInput(event, M) {
  * @param event Received if this is called by the event listener.
  * @param data Data for the sparse matrix.
  */
-function drawSparseMatrixInput(event, M) {
-    var rowNum, colNum;   // size of input matrix
+function drawSparseMatrixInput(event, data) {
+    $("#row-num").val(0);
+    $("#col-num").val(0);
+
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
-        $("#row-num").val(M.length);
-        $("#col-num").val(M[0].length);
+        // do nothing
     } else {  // event listener
-        rowNum = parseInt($("#row-num").val());
-        colNum = parseInt($("#col-num").val());
-        M = math.zeros(rowNum, colNum);
+        M = "";
         $("#list").html("Drop files here");
     }
 
-    $("#matrix-data").html(generateMatrixMarkup(M, true));
-    $("#matrix-data-div").show();
+    $("#matrix-data").html(M);
 }
 
 /**
- * Reads the input matrix and returns it as an array.
+ * Reads the input dense matrix and returns it as an array.
  * @return {*} input matrix
  */
-function readInputMatrix() {
+function readInputDenseMatrix() {
     var rowNum = parseInt($("#row-num").val()),
         colNum = parseInt($("#col-num").val()),
         M = math.zeros(rowNum, colNum);
@@ -218,7 +221,7 @@ function generateResultMatricesMarkup(result) {
  * Presents the decomposition.
  */
 function presentDecomposition() {
-    var M = readInputMatrix(),  // the input matrix
+    var M = readInputDenseMatrix(),  // the input matrix
         markup,                 // the markup for the result matrices
         result;                 // will hold the result
 
@@ -272,6 +275,7 @@ $(document).ready(function () {
     $.fn.scrollView = scrollView;
 
     $("#choose-size").click(drawDenseMatrixInput);
+    $("#input-sparse-matrix").click(drawSparseMatrixInput);
     $("#decompose").click(presentDecomposition);
     $("#matrix-data-div").hide();
     $("#decomposition").hide();

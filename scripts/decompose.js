@@ -1,3 +1,8 @@
+/***
+ * decompose.js
+ * Contains all the various methods for dense matrices.
+ */
+
 math.config({matrix: 'array'});
 
 /***

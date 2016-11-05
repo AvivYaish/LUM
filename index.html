@@ -19,19 +19,19 @@
         <h1>M=LU</h1>
         <label>Rows:<input id="row-num" type="text" value="0"/></label>
         <label>Columns:<input id="col-num" type="text" value="0"/></label>
-        <input id="choose-size" type="button" value="Choose size"><br><br>
+        <input id="choose-size" type="button" value="Choose size">
+        (or <input id="input-sparse-matrix" type="button" value="Input sparse matrix">)
+        <br><br>
         <div id="load-from-file-div">
-            or <br><br>
-            <input id="input-sparse-matrix" type="button" value="Input sparse matrix"><br><br>
             or <br><br>
             <div id="drop-zone"><output id="list">Drop files here</output></div>
         </div>
 
-        <div id= "matrix-data-div" align="center" style="display: block;">
+        <div id= "input-div" align="center" style="display: block;">
             <br>
             <h4>Input matrix:</h4>
-            <table id="matrix-data">
-            </table>
+            <div id="matrix-data">
+            </div>
         </div>
         <br>
 

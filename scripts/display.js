@@ -101,28 +101,43 @@ function drawDenseMatrixInput(event, M) {
     }
 
     $("#matrix-data").html(generateMatrixMarkup(M, true));
-    $("#matrix-data-div").show();
+    $("#input-div").show();
 }
 
 /**
  * Draws the input table for the input sparse matrix.
  * @param event Received if this is called by the event listener.
- * @param data Data for the sparse matrix.
+ * @param M The sparse matrix.
  */
-function drawSparseMatrixInput(event, data) {
+function drawSparseMatrixInput(event, M) {
     $("#row-num").val(0);
     $("#col-num").val(0);
 
     // Determine if the function was called by an event listener or by loadFile
-    if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
+    if (typeof(event) === 'undefined') {  // loadFile
         // do nothing
     } else {  // event listener
         M = "";
         $("#list").html("Drop files here");
+        M = "<textarea name='sparse-input' cols='60' rows='5'>" +
+            "'Input sparse here! Format: [[row,column,value], ...]'" +
+            "</textarea>";
     }
 
     $("#matrix-data").html(M);
+    $("#input-div").show();
 }
+
+/**
+ * Reads the input matrix and returns it.
+ * @returns {*} Input matrix.
+ */
+function readInputMatrix() {
+    var M;
+    M = readInputDenseMatrix();
+    return M;
+}
+
 
 /**
  * Reads the input dense matrix and returns it as an array.
@@ -218,10 +233,10 @@ function generateResultMatricesMarkup(result) {
 }
 
 /**
- * Presents the decomposition.
+ * Presents the result of the chosen action.
  */
-function presentDecomposition() {
-    var M = readInputDenseMatrix(),  // the input matrix
+function presentResult() {
+    var M = readInputMatrix(),  // the input matrix
         markup,                 // the markup for the result matrices
         result;                 // will hold the result
 
@@ -276,8 +291,8 @@ $(document).ready(function () {
 
     $("#choose-size").click(drawDenseMatrixInput);
     $("#input-sparse-matrix").click(drawSparseMatrixInput);
-    $("#decompose").click(presentDecomposition);
-    $("#matrix-data-div").hide();
+    $("#decompose").click(presentResult);
+    $("#input-div").hide();
     $("#decomposition").hide();
 
     // Show the load from file div only if supported by browser

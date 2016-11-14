@@ -7,16 +7,6 @@
  * computation precision. */
 var DIGITS_AFTER_DOT = 3;
 
-/** Delimiters for the GNU Octave matrix format. */
-var ROW_DELIM = ';';
-var COL_DELIM = ',';
-
-/** The cell of the start of the data in the GNU Octave matrix format. */
-var DATA_START = 1;
-
-/** The length of trailing unnecessary data cells in the GNU Octave matrix format. */
-var DATA_TRAIL_LEN = 1;
-
 /** Alignments of matrices on the screen */
 var MATRIX_ALIGN = ['left', 'right'];
 
@@ -129,7 +119,6 @@ function drawSparseMatrixInput(event, M) {
     if (typeof(event) === 'undefined') {  // loadFile
         // do nothing
     } else {  // event listener
-        M = "";
         $("#list").html("Drop files here");
         M = "<textarea name='sparse-input' cols='60' rows='5'>" +
             "'Input sparse here! Format: [[row,column,value], ...]'" +
@@ -282,18 +271,6 @@ function presentResult() {
 
     $("#result").html(markup);
     $("#decomposition").show().scrollView();
-}
-
-/**
- * @param M The dense matrix to stringify.
- * @return String a string representation of the matrix.
- */
-function denseMatrixToString(M) {
-    var string = [];
-    for (var row = 0; row < M.length; row++) {
-        string.push(M[row].join(",\t"));
-    }
-    return string.join("\n");
 }
 
 /** Initialize the document. */

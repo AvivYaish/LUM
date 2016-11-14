@@ -23,6 +23,9 @@ var MATRIX_ALIGN = ['left', 'right'];
 /** Max number of matrices in the same row */
 var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
 
+/** The initial value for the GUI matrix */
+var INIT_MATRIX_VAL = 0;
+
 /**
  * If called by a $("#div-name").scrollView(), it scrolls to the div.
  */
@@ -110,8 +113,8 @@ function drawDenseMatrixInput(event, M) {
  * @param M The sparse matrix.
  */
 function drawSparseMatrixInput(event, M) {
-    $("#row-num").val(0);
-    $("#col-num").val(0);
+    $("#row-num").val(INIT_MATRIX_VAL);
+    $("#col-num").val(INIT_MATRIX_VAL);
 
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile
@@ -147,6 +150,7 @@ function readInputDenseMatrix() {
     var rowNum = parseInt($("#row-num").val()),
         colNum = parseInt($("#col-num").val()),
         M = math.zeros(rowNum, colNum);
+
     for (var row = 0; row < rowNum; row++) {
         for (var col = 0; col < colNum; col++) {
             M[row][col] = parseInt($("#" + row + "-" + col + "").val());
@@ -272,10 +276,10 @@ function presentResult() {
 }
 
 /**
- * @param M The matrix to turn to string.
+ * @param M The dense matrix to stringify.
  * @return String a string representation of the matrix.
  */
-function matrixToString(M) {
+function denseMatrixToString(M) {
     var string = [];
     for (var row = 0; row < M.length; row++) {
         string.push(M[row].join(",\t"));

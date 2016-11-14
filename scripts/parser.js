@@ -4,7 +4,7 @@
  */
 
 //
-var MATCH_BRACKETS_REGEX = /[\[\]']+/g;
+var MATCH_SQUARE_BRACKETS_REGEX = /[\[\]']+/g;
 
 //
 var MATCH_WHITESPACE_REGEX = /\s/g;
@@ -13,8 +13,10 @@ var MATCH_WHITESPACE_REGEX = /\s/g;
 var DENSE_ROW_DELIM = ';';
 var DENSE_COL_DELIM = ',';
 
+var SPARSE_VALUE_DELIM = ',';
+
 //
-var IDENTIFY_DENSE_STR = "\s*\[";
+var IDENTIFY_DENSE_STR = '\\s*\\[';
 
 //
 var IDENTIFY_DENSE_REGEX = new RegExp(IDENTIFY_DENSE_STR);
@@ -23,11 +25,14 @@ var IDENTIFY_DENSE_REGEX = new RegExp(IDENTIFY_DENSE_STR);
 var IDENTIFY_SPARSE_REGEX = new RegExp(IDENTIFY_DENSE_STR + IDENTIFY_DENSE_STR);
 
 //
-var MATRIX_VAL_REGEX_STR = "\s*-?\d*\.?\d*\s*";
+var MATRIX_VAL_REGEX_STR = "\\s*-?\\d*\\.?\\d*\\s*";
 
 //
 var DENSE_MATRIX_INPUT_REGEX =
-    new RegExp("\[((" + MATRIX_VAL_REGEX_STR + ")(," + MATRIX_VAL_REGEX_STR + ")*;?)+\]");
+    new RegExp("\\[((" + MATRIX_VAL_REGEX_STR + ")(," + MATRIX_VAL_REGEX_STR + ")*;?)+\\]");
+
+//
+var DENSE_MATRIX_INPUT_VALUE_REGEX = new RegExp();
 
 
 //
@@ -57,28 +62,31 @@ function getInputMatrixType(str) {
 /**
  *
  * @param str
- * @param parseAsNumbers
+ * @param parseToString
  * @returns {*}
  */
-function parseDenseMatrix(str, parseAsNumbers) {
-    var M;
+function parseDenseMatrix(str, parseToString) {
+    var M,
+        row,
+        col;
 
-    if (parseAsNumbers === undefined) {
-        parseAsNumbers = false;
+    if (parseToString === undefined) {
+        parseToString = false;
     }
 
-    M = str.replace(MATCH_WHITESPACE_REGEX).split(DENSE_ROW_DELIM);
+    M = str.replace(MATCH_SQUARE_BRACKETS_REGEX, '').replace(MATCH_WHITESPACE_REGEX, '').split(DENSE_ROW_DELIM);
 
     // split each row into the proper columns
-    for (var row = 0; row < M.length; row++) {
-        M[row] = M[row].split(COL_DELIM);
-        if (parseAsNumbers) {
-            for (var col = 0; col < M[row].length; col++) {
+    for (row = 0; row < M.length; row++) {
+        M[row] = M[row].split(DENSE_COL_DELIM);
+
+        if (!parseToString) {
+            for (col = 0; col < M[row].length; col++) {
                 M[row][col] = parseFloat(M[row][col]);
             }
         }
     }
-
+    console.log(M);
     return M;
 }
 
@@ -88,9 +96,17 @@ function parseDenseMatrix(str, parseAsNumbers) {
  * @returns {*}
  */
 function parseSparseMatrix(str) {
-    var M;
+    var M,
+        stringValues,
+        i,
+        matrixValues,
+        diagonalIndices;
 
-    str.replace(MATCH_WHITESPACE_REGEX).split(DENSE_ROW_DELIM);
+    stringValues = str.replace(MATCH_WHITESPACE_REGEX, '').split(SPARSE_VALUE_DELIM);
+
+    for (i = 0; i < stringValues.length; i++) {
+
+    }
 
     return M;
 }

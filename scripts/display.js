@@ -45,14 +45,28 @@ function scrollView() {
  */
 function loadFile(event) {
     var matrix =
-        event.target.result.substring(DATA_START, event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
-    
-    // split each row into the proper columns
-    for (var row = 0; row < matrix.length; row++) {
-        matrix[row] = matrix[row].split(COL_DELIM);
-    }
+        event.target.result;//.substring(DATA_START, event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
+    //
+    // // split each row into the proper columns
+    // for (var row = 0; row < matrix.length; row++) {
+    //     matrix[row] = matrix[row].split(COL_DELIM);
+    // }
 
-    drawDenseMatrixInput(undefined, matrix);
+    switch (getInputMatrixType(matrix)){
+        case MATRIX_TYPE.DENSE: {
+            drawDenseMatrixInput(undefined, parseDenseMatrix(matrix, true));
+            break;
+        }
+        case MATRIX_TYPE.SPARSE: {
+
+            break;
+        }
+        default: {
+
+            break;
+        }
+    }
+    //drawDenseMatrixInput(undefined, matrix);
 }
 
 /**

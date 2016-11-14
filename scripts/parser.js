@@ -3,39 +3,40 @@
  * Contains all functionality related to parsing input files.
  */
 
-//
+/** */
 var MATCH_SQUARE_BRACKETS_REGEX = /[\[\]']+/g;
 
-//
+/** */
 var MATCH_WHITESPACE_REGEX = /\s/g;
 
 /** Delimiters for the GNU Octave dense matrix format. */
 var DENSE_ROW_DELIM = ';';
 var DENSE_COL_DELIM = ',';
 
+/** */
 var SPARSE_VALUE_DELIM = ',';
 
-//
+/** */
 var IDENTIFY_DENSE_STR = '\\s*\\[';
 
-//
+/** */
 var IDENTIFY_DENSE_REGEX = new RegExp(IDENTIFY_DENSE_STR);
 
-//
+/** */
 var IDENTIFY_SPARSE_REGEX = new RegExp(IDENTIFY_DENSE_STR + IDENTIFY_DENSE_STR);
 
-//
+/** */
 var MATRIX_VAL_REGEX_STR = "\\s*-?\\d*\\.?\\d*\\s*";
 
-//
+/** */
 var DENSE_MATRIX_INPUT_REGEX =
     new RegExp("\\[((" + MATRIX_VAL_REGEX_STR + ")(," + MATRIX_VAL_REGEX_STR + ")*;?)+\\]");
 
-//
+/** */
 var DENSE_MATRIX_INPUT_VALUE_REGEX = new RegExp();
 
 
-//
+/** */
 var MATRIX_TYPE = {
     DENSE: "Dense",
     SPARSE: "Sparse",
@@ -86,7 +87,7 @@ function parseDenseMatrix(str, parseToString) {
             }
         }
     }
-    console.log(M);
+
     return M;
 }
 

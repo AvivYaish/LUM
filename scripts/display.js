@@ -45,12 +45,7 @@ function scrollView() {
  */
 function loadFile(event) {
     var matrix =
-        event.target.result;//.substring(DATA_START, event.target.result.length - DATA_TRAIL_LEN).split(ROW_DELIM);
-    //
-    // // split each row into the proper columns
-    // for (var row = 0; row < matrix.length; row++) {
-    //     matrix[row] = matrix[row].split(COL_DELIM);
-    // }
+        event.target.result;
 
     switch (getInputMatrixType(matrix)){
         case MATRIX_TYPE.DENSE: {
@@ -66,7 +61,6 @@ function loadFile(event) {
             break;
         }
     }
-    //drawDenseMatrixInput(undefined, matrix);
 }
 
 /**
@@ -106,6 +100,7 @@ function handleDragOver(event) {
  */
 function drawDenseMatrixInput(event, M) {
     var rowNum, colNum;   // size of input matrix
+
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile, need to set the matrix size
         $("#row-num").val(M.length);

@@ -72,6 +72,11 @@ function parseDenseMatrix(str, parseAsNumbers) {
     // split each row into the proper columns
     for (var row = 0; row < M.length; row++) {
         M[row] = M[row].split(COL_DELIM);
+        if (parseAsNumbers) {
+            for (var col = 0; col < M[row].length; col++) {
+                M[row][col] = parseFloat(M[row][col]);
+            }
+        }
     }
 
     return M;

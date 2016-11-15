@@ -320,12 +320,13 @@ function presentResult() {
     if (result === NO_DECOMP_RESULT) {
         resultMarkup = "Can't decompose! Try pivoting.";
     } else {
+        // different presentation for each matrix type
         if (OPERATIONS_FOR_MATRIX_TYPES.DENSE.has(operationType)) {
             resultMarkup = generateResultMatricesMarkup(result);
         } else if (OPERATIONS_FOR_MATRIX_TYPES.SPARSE.has(operationType)) {
             resultMarkup = "<textarea id='sparse-input' cols='60' rows='12'>" +
-                        result.toString() +
-                     "</textarea>";
+                            result.toString() +
+                           "</textarea>";
         }
     }
 

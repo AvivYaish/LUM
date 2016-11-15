@@ -161,17 +161,17 @@ function drawSparseMatrixInput(event, M) {
  */
 function readInputMatrix() {
     var M,
-        decompType,
+        operationType,
         matrixType;
 
     matrixType = $("#matrix-data").attr("matrix-type");
-    decompType = $("#decomposition-type").val();
+    operationType = $("#decomposition-type").val();
 
     switch (matrixType) {
         case MATRIX_INPUT_TYPES.DENSE: {
             M = readInputDenseMatrix();
 
-            if (OPERATIONS_FOR_MATRIX_TYPES.SPARSE.has(decompType)) {
+            if (OPERATIONS_FOR_MATRIX_TYPES.SPARSE.has(operationType)) {
                 M = SparseMatrix.fromDense(M);
             }
             break;
@@ -179,7 +179,7 @@ function readInputMatrix() {
         case MATRIX_INPUT_TYPES.SPARSE: {
             M = parseSparseMatrix($("#sparse-input").html());
 
-            if (OPERATIONS_FOR_MATRIX_TYPES.DENSE.has(decompType)) {
+            if (OPERATIONS_FOR_MATRIX_TYPES.DENSE.has(operationType)) {
                 M = M.toDense();
             }
             break;
@@ -288,15 +288,15 @@ function generateResultMatricesMarkup(result) {
  * Presents the result of the chosen action.
  */
 function presentResult() {
-    var M,          // the input matrix
-        markup,     // the markup for the result matrices
-        result,     // will hold the result
-        decompType;
+    var M,              // the input matrix
+        result,         // will hold the result
+        resultMarkup,   // the markup for the markup for the result
+        operationType;     // the requested operation type
 
     M = readInputMatrix();
-    decompType = $("#decomposition-type").val();
+    operationType = $("#decomposition-type").val();
 
-    switch (decompType) {
+    switch (operationType) {
         case OPERATION_TYPES.PLU:
             result = decomposePLU(M);
             break;
@@ -318,18 +318,18 @@ function presentResult() {
     }
 
     if (result === NO_DECOMP_RESULT) {
-        markup = "Can't decompose! Try pivoting.";
+        resultMarkup = "Can't decompose! Try pivoting.";
     } else {
-        if (OPERATIONS_FOR_MATRIX_TYPES.DENSE.has(decompType)) {
-            markup = generateResultMatricesMarkup(result);
-        } else if (OPERATIONS_FOR_MATRIX_TYPES.SPARSE.has(decompType)) {
-            markup = "<textarea id='sparse-input' cols='60' rows='12'>" +
+        if (OPERATIONS_FOR_MATRIX_TYPES.DENSE.has(operationType)) {
+            resultMarkup = generateResultMatricesMarkup(result);
+        } else if (OPERATIONS_FOR_MATRIX_TYPES.SPARSE.has(operationType)) {
+            resultMarkup = "<textarea id='sparse-input' cols='60' rows='12'>" +
                         result.toString() +
                      "</textarea>";
         }
     }
 
-    $("#result").html(markup);
+    $("#result").html(resultMarkup);
     $("#decomposition").show().scrollView();
 }
 

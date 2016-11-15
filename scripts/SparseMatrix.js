@@ -184,17 +184,25 @@ SparseMatrix.prototype.getElem = function(row, col) {
 SparseMatrix.prototype.toString = function() {
     var str,
         row,
-        col;
+        col,
+        val;
 
     str = "";
 
     for (row = 0; row < this._n; row++) {
         for (col = 0; col < this._n; col++) {
-            str += this.getElem(row, col).toString() + "\t";
+            val = this.getElem(row, col);
+
+            if (val !== 0) {
+                if (str !== "") {
+                    str += ", ";
+                }
+                str += "[" + (row + 1).toString() + "," + (col + 1).toString() + "," + val.toString() + "]";
+            }
         }
 
         str += "\n";
     }
 
-    return str;
+    return "[" + str + "]";
 };

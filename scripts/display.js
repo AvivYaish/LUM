@@ -14,7 +14,34 @@ var MATRIX_ALIGN = ['left', 'right'];
 var MAX_MATRIX_NUM = MATRIX_ALIGN.length;
 
 /** The initial value for the GUI matrix */
-var INIT_MATRIX_VAL = 0;
+var INIT_GUI_MATRIX_VAL = 0;
+
+/** */
+var MATRIX_INPUT_TYPES = {
+    DENSE: "dense",
+    SPARSE: "sparse"
+};
+
+/** */
+var OPERATION_TYPES = {
+    LU: "LU",
+    PLU: "PLU",
+    LDLT: "LDLt",
+    SPARSE_LDLT: "Sparse LDLt",
+    RREF: "RREF",
+    NULLSPACE: "Nullspace"
+};
+
+/** */
+var OPERATIONS_FOR_MATRIX_TYPES = {
+    DENSE: new Set([OPERATION_TYPES.LU,
+                    OPERATION_TYPES.PLU,
+                    OPERATION_TYPES.LDLT,
+                    OPERATION_TYPES.RREF,
+                    OPERATION_TYPES.NULLSPACE]),
+
+    SPARSE: new Set([OPERATION_TYPES.SPARSE_LDLT])
+};
 
 /**
  * If called by a $("#div-name").scrollView(), it scrolls to the div.
@@ -34,20 +61,19 @@ function scrollView() {
  * @param event Load event.
  */
 function loadFile(event) {
-    var matrix =
-        event.target.result;
+    var matrix = event.target.result;
 
     switch (getInputMatrixType(matrix)){
         case MATRIX_TYPE.DENSE: {
-            drawDenseMatrixInput(undefined, parseDenseMatrix(matrix, true));
+            drawDenseMatrixInput(undefined, parseDenseMatrix(matrix));
             break;
         }
         case MATRIX_TYPE.SPARSE: {
-
+            drawSparseMatrixInput(undefined, matrix);
             break;
         }
         default: {
-
+            $("#matrix-data").html("Bad input file.");
             break;
         }
     }
@@ -102,7 +128,7 @@ function drawDenseMatrixInput(event, M) {
         $("#list").html("Drop files here");
     }
 
-    $("#matrix-data").html(generateMatrixMarkup(M, true));
+    $("#matrix-data").html(generateMatrixMarkup(M, true)).attr("matrix-type", MATRIX_INPUT_TYPES.DENSE);
     $("#input-div").show();
 }
 
@@ -112,20 +138,20 @@ function drawDenseMatrixInput(event, M) {
  * @param M The sparse matrix.
  */
 function drawSparseMatrixInput(event, M) {
-    $("#row-num").val(INIT_MATRIX_VAL);
-    $("#col-num").val(INIT_MATRIX_VAL);
+    $("#row-num").val(INIT_GUI_MATRIX_VAL);
+    $("#col-num").val(INIT_GUI_MATRIX_VAL);
 
     // Determine if the function was called by an event listener or by loadFile
     if (typeof(event) === 'undefined') {  // loadFile
         // do nothing
     } else {  // event listener
         $("#list").html("Drop files here");
-        M = "<textarea name='sparse-input' cols='60' rows='5'>" +
-            "'Input sparse here! Format: [[row,column,value], ...]'" +
-            "</textarea>";
+        M = "'Input sparse here! Format: [[row,column,value], ...]'";
     }
 
-    $("#matrix-data").html(M);
+    $("#matrix-data").html("<textarea id='sparse-input' cols='60' rows='12'>" +
+                            M +
+                            "</textarea>").attr("matrix-type", MATRIX_INPUT_TYPES.SPARSE);
     $("#input-div").show();
 }
 
@@ -134,8 +160,32 @@ function drawSparseMatrixInput(event, M) {
  * @returns {*} Input matrix.
  */
 function readInputMatrix() {
-    var M;
-    M = readInputDenseMatrix();
+    var M,
+        decompType,
+        matrixType;
+
+    matrixType = $("#matrix-data").attr("matrix-type");
+    decompType = $("#decomposition-type").val();
+
+    switch (matrixType) {
+        case MATRIX_INPUT_TYPES.DENSE: {
+            M = readInputDenseMatrix();
+
+            if (OPERATIONS_FOR_MATRIX_TYPES.SPARSE.has(decompType)) {
+                M = SparseMatrix.fromDense(M);
+            }
+            break;
+        }
+        case MATRIX_INPUT_TYPES.SPARSE: {
+            M = parseSparseMatrix($("#sparse-input").html());
+
+            if (OPERATIONS_FOR_MATRIX_TYPES.DENSE.has(decompType)) {
+                M = M.toDense();
+            }
+            break;
+        }
+    }
+
     return M;
 }
 
@@ -151,7 +201,7 @@ function readInputDenseMatrix() {
 
     for (var row = 0; row < rowNum; row++) {
         for (var col = 0; col < colNum; col++) {
-            M[row][col] = parseInt($("#" + row + "-" + col + "").val());
+            M[row][col] = parseFloat($("#" + row + "-" + col + "").val());
         }
     }
     return M;
@@ -238,27 +288,31 @@ function generateResultMatricesMarkup(result) {
  * Presents the result of the chosen action.
  */
 function presentResult() {
-    var M = readInputMatrix(),  // the input matrix
-        markup,                 // the markup for the result matrices
-        result;                 // will hold the result
+    var M,          // the input matrix
+        markup,     // the markup for the result matrices
+        result,     // will hold the result
+        decompType;
 
-    switch ($("#decomposition-type").val()) {
-        case "PLU":
+    M = readInputMatrix();
+    decompType = $("#decomposition-type").val();
+
+    switch (decompType) {
+        case OPERATION_TYPES.PLU:
             result = decomposePLU(M);
             break;
-        case "LU":
+        case OPERATION_TYPES.LU:
             result = decomposeLU(M);
             break;
-        case "LDLt":
+        case OPERATION_TYPES.LDLT:
             result = decomposeLDL(M);
             break;
-        case "Sparse LDLt":
-            result = [[], ["LDLt of M", SparseMatrix.fromDense(M).LDLt().toDense()]];
+        case OPERATION_TYPES.SPARSE_LDLT:
+            result = M.LDLt();
             break;
-        case "RREF":
+        case OPERATION_TYPES.RREF:
             result = findRREF(M);
             break;
-        case "Nullspace":
+        case OPERATION_TYPES.NULLSPACE:
             result = findNullspace(M);
             break;
     }
@@ -266,7 +320,13 @@ function presentResult() {
     if (result === NO_DECOMP_RESULT) {
         markup = "Can't decompose! Try pivoting.";
     } else {
-        markup = generateResultMatricesMarkup(result);
+        if (OPERATIONS_FOR_MATRIX_TYPES.DENSE.has(decompType)) {
+            markup = generateResultMatricesMarkup(result);
+        } else if (OPERATIONS_FOR_MATRIX_TYPES.SPARSE.has(decompType)) {
+            markup = "<textarea id='sparse-input' cols='60' rows='12'>" +
+                        result.toString() +
+                     "</textarea>";
+        }
     }
 
     $("#result").html(markup);

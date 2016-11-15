@@ -23,7 +23,7 @@ var IDENTIFY_SPARSE_REGEX = new RegExp(IDENTIFY_DENSE_STR + IDENTIFY_DENSE_STR);
 /** A regex that matches a single value in the sparse matrix input format. */
 var SPARSE_MATRIX_VALUE_REGEX = /\[(\d*),(\d*),(-?\d*\.?\d*)\]/g;
 
-/** */
+/** The indices of the various values in the result of a match by SPARSE_MATRIX_VALUE_REGEX */
 var SPARSE_REGEX_ROW_INDEX = 1;
 var SPARSE_REGEX_COL_INDEX = 2;
 var SPARSE_REGEX_VAL_INDEX = 3;
